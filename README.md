@@ -1,6 +1,6 @@
-# pong-svelte
+# Chamber Contest UI
 
-Ping pong stat tracker using SvelteKit, deployed to [Vercel](https://vercel.com).
+Chamber Event tracker using SvelteKit, deployed to [Vercel](https://vercel.com).
 
 ## Deploy Your Own
 
