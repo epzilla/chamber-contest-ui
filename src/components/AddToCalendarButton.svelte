@@ -10,15 +10,19 @@
   let clickOutsideListener;
 
   onMount(() => {
-    clickOutsideListener = document.addEventListener('mousedown', e => {
-      if (!(e.target as HTMLElement).closest('.add-to-calendar-btn')) {
-        isShowingDropdown = false;
-      }
-    });
+    if (typeof document !== 'undefined') {
+      clickOutsideListener = document.addEventListener('mousedown', e => {
+        if (!(e.target as HTMLElement).closest('.add-to-calendar-btn')) {
+          isShowingDropdown = false;
+        }
+      });
+    }
   });
 
   onDestroy(() => {
-    document.removeEventListener('mousedown', clickOutsideListener);
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('mousedown', clickOutsideListener);
+    }
   });
 
   $: {
