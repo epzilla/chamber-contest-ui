@@ -25,6 +25,8 @@
 </script>
 
 <script lang="ts">
+  import { onDestroy } from 'svelte';
+  import AddToCalendarButton from '../../components/AddToCalendarButton.svelte';
   import DateTime from '../../components/DateTime.svelte';
 
   export let event: ChamberEvent;
@@ -61,6 +63,12 @@
     }
   }
 
+  onDestroy(() => {
+    if (futureEventInterval) {
+      clearInterval(futureEventInterval);
+    }
+  });
+
   function onSubmit() {
     submitting = true;
     fetch(`${BASE_URL}events/mark-attendance`, {
@@ -78,6 +86,7 @@
       const m = memberList.find(m => m.id === selectedAttendee);
       liveAttendeeList = [...liveAttendeeList, m];
       selectedAttendee = null;
+      listInitted = false;
     });
   }
 
@@ -105,14 +114,22 @@
       {/each}
 
       {#if showingSelector}
-        <select on:change={onSelectChange}>
-          {#each nonAttendees as attendee}
-            <option value={attendee.id}>{attendee.name}</option>
-          {/each}
-        </select>
-        <button on:click={onSubmit} disabled={submitting || !selectedAttendee}
-          >Count Me!</button
-        >
+        <div class="member-select-control">
+          <select class="member-select" on:change={onSelectChange}>
+            {#each nonAttendees as attendee}
+              <option value={attendee.id}>{attendee.name}</option>
+            {/each}
+          </select>
+          <button
+            class="primary"
+            on:click={onSubmit}
+            disabled={submitting || !selectedAttendee}
+            style="margin: 5px">✔ Count Me!</button
+          >
+          <button class="x-btn" on:click={() => (showingSelector = false)}
+            >&times;</button
+          >
+        </div>
       {:else}
         <button on:click={() => (showingSelector = true)}>Mark Attended</button>
       {/if}
@@ -120,6 +137,30 @@
       <h4>
         Once this event begins, you can visit this page to mark your attendance
       </h4>
+      <AddToCalendarButton {event} />
     {/if}
   </div>
 {/if}
+
+<style lang="scss">
+  .member-select-control {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .member-select {
+    min-width: 250px;
+    height: 40px;
+    font-size: 1rem;
+  }
+  .x-btn {
+    border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    background-color: #00000036;
+    color: white;
+    font-weight: 900;
+    font-size: 22px;
+    padding-bottom: 11px;
+  }
+</style>

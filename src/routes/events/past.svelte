@@ -21,6 +21,8 @@
 </script>
 
 <script lang="ts">
+  import EventBlock from '../../components/EventBlock.svelte';
+
   export let events: ChamberEvent[];
 </script>
 
@@ -28,14 +30,8 @@
   <div class="main events">
     <h2 class="align-center primary-text">Past Events</h2>
     <ul class="events-list">
-      {#each events as { id, title, eventType, dateEntered }}
-        <li class="event">
-          <a href={`/events/${id}`}>
-            <h3 class="event-title">{title}</h3>
-          </a>
-          <h5>{eventType[0].type} - {eventType[0].points} points</h5>
-          <p class="event-date">{dateEntered}</p>
-        </li>
+      {#each events as event}
+        <EventBlock {event} />
       {/each}
     </ul>
   </div>

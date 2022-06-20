@@ -125,7 +125,7 @@
       }
     }
   }
-  .btn.menu-btn {
+  button.menu-btn {
     display: none;
     margin-right: 10px;
   }
@@ -208,7 +208,7 @@
         border-bottom: 1px solid var(--secondary);
       }
     }
-    .btn.menu-btn {
+    button.menu-btn {
       display: inline-flex;
       height: 34px;
       background-color: var(--secondary);
