@@ -10,7 +10,7 @@
       ]);
       const players = await playersResult.json();
       const stats = await statsResult.json();
-      const player = players.find((p) => p.id.toString() === id.toString());
+      const player = players.find(p => p.id.toString() === id.toString());
       return {
         props: {
           player,
@@ -27,14 +27,11 @@
 </script>
 
 <script>
-  import { MATCH_SUMMARY } from '../../modules/constants';
-  import { getFullPlayerName } from '../../modules/helpers';
-  import BoxScore from '../../components/BoxScore.svelte';
   export let player;
   export let stats;
 </script>
 
-{#if player}
+<!-- {#if player}
   <div class="main player-profile">
     <h2 class="align-center primary-text">{getFullPlayerName(player)}</h2>
     {#if stats}
@@ -43,4 +40,4 @@
       {/each}
     {/if}
   </div>
-{/if}
+{/if} -->

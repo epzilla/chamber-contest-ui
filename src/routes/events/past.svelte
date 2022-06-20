@@ -1,12 +1,11 @@
 <script context="module">
-  import { isEmpty } from '../modules/helpers';
-  import { BASE_URL } from '../modules/constants';
+  import { BASE_URL } from '../../modules/constants';
 
-  export async function load({ fetch, context }) {
+  export async function load({ fetch, page }) {
     try {
-      console.log(`${BASE_URL}events/current-month`);
-      const eventsRsp = await fetch(`${BASE_URL}events`);
-      const events = await eventsRsp.json();
+      const id = await page.params.id;
+      const eventResult = await fetch(`${BASE_URL}past-events`);
+      const events = await eventResult.json();
       return {
         props: {
           events
@@ -27,7 +26,7 @@
 
 {#if events}
   <div class="main events">
-    <h2 class="align-center primary-text">Events</h2>
+    <h2 class="align-center primary-text">Past Events</h2>
     <ul class="events-list">
       {#each events as { id, title, eventType, dateEntered }}
         <li class="event">

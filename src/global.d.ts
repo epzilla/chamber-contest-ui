@@ -1,53 +1,32 @@
 /// <reference types="@sveltejs/kit" />
 
-type Player = {
-  id: string;
-  fname: string;
-  lname: string;
-};
-
-type Game = {
+type EventType = {
   id: number;
-  gameNum: number;
-  score1: number;
-  score2: number;
-  matchId: number;
-  matchFinished: boolean;
-  gameFinished: boolean;
+  type: string;
+  points: number;
 };
 
-type Match = {
-  id: string;
-  updateEveryPoint: boolean;
-  playTo: number;
-  winByTwo: boolean;
-  bestOf: number;
-  playAllGames: boolean;
-  doubles: boolean;
-  player1Id: number;
-  player2Id: number;
-  partner1Id: number;
-  partner2Id: number;
-  finished: boolean;
+type Member = {
+  id: number;
+  name: string;
+};
+
+type ChamberEvent = {
+  id: number;
+  guests: number;
+  eventType: EventType[];
+  dateOfEvent: string;
+  dateEntered: string;
   startTime: string;
-  finishTime: string;
-  player1: Player;
-  player2: Player;
-  partner1?: Player;
-  partner2?: Player;
-  games: Game[];
+  endTime: string;
+  title: string;
+  address?: string;
+  notes?: string;
 };
 
-type MatchStats = {
-  p1GamesWon: number;
-  p2GamesWon: number;
-  p1TotalPoints: number;
-  p2TotalPoints: number;
-  p1name: string;
-  p2name: string;
-  resultString: string;
-  pointsWonString: string;
-  winner: number;
+type EventAttendance = {
+  member: Member;
+  event: ChamberEvent;
 };
 
 type Alert = {
