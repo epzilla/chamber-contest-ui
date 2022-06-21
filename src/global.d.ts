@@ -49,7 +49,7 @@ type PointsTotalWithEvents = PointsTotal & {
   guests: number;
 };
 
-type MonthTotalRsp = {
+type TimePeriodTotalRsp = {
   allEventsAttendance: EventAttendance[];
   pointTotals: PointsTotal[];
 };

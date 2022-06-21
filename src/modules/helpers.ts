@@ -102,3 +102,36 @@ export const debounce = function (func, wait, immediate) {
 };
 
 export const getFirstName = (name?: string) => (name || '').split(' ')[0];
+
+export function calculateTotalsForTimePeriod(json: TimePeriodTotalRsp) {
+  const { allEventsAttendance, pointTotals } = json;
+  const emptyTotals: PointsTotalWithEvents[] = pointTotals
+    .filter(t => t.total === 0)
+    .map(t => ({
+      ...t,
+      events: [],
+      guests: 0
+    }));
+  const totals: PointsTotalWithEvents[] = [];
+  allEventsAttendance.forEach(att => {
+    const mem = pointTotals.find(pt => pt.memberId === att.memberId);
+    if (mem) {
+      const i = totals.findIndex(t => t.memberId === att.memberId);
+      if (i !== -1) {
+        totals[i].events.push(att);
+        totals[i].guests += att.guests;
+      } else {
+        const memberTotal: PointsTotalWithEvents = {
+          memberId: mem.memberId,
+          name: mem.name,
+          total: mem.total,
+          rank: mem.rank,
+          events: [att],
+          guests: att.guests
+        };
+        totals.push(memberTotal);
+      }
+    }
+  });
+  return totals.concat(emptyTotals);
+}

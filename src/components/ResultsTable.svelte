@@ -2,7 +2,7 @@
   import format from 'date-fns/format';
   import { getFirstName } from '../modules/helpers';
 
-  export let currentMonth: string;
+  export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
 
   let expandedRows: { [id: number]: boolean } = {};
@@ -72,7 +72,7 @@
             </div>
           {:else}
             <em
-              >{getFirstName(name)} did not attend any events in {currentMonth}</em
+              >{getFirstName(name)} did not attend any events in {timePeriod}</em
             >
           {/if}
         </div>
