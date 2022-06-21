@@ -5,7 +5,7 @@
   export async function load({ fetch, page }) {
     try {
       const now = new Date();
-      const currentMonth = format(now, 'MMMM');
+      const currentMonth = format(now, 'MMMM Y');
       const rsp = await fetch(`${BASE_URL}totals/current-month`);
       const json: MonthTotalRsp = await rsp.json();
       const { allEventsAttendance, pointTotals } = json;
@@ -45,7 +45,6 @@
 </script>
 
 <script lang="ts">
-  import DateTime from '../../components/DateTime.svelte';
   export let currentMonth: string;
   export let totals: PointsTotalWithEvents[];
 
@@ -60,7 +59,7 @@
   }
 </script>
 
-<h2>Chamber Points Contest Results</h2>
+<h2>{currentMonth} Chamber Points Contest Results</h2>
 
 <div class="results-table">
   <div class="table-header">
@@ -113,6 +112,11 @@
     {/each}
   </div>
 </div>
+
+<hr />
+<button><h4>View Year-to-date Totals</h4></button>
+<h4>View Previous Months:</h4>
+<button><h5>May 2022</h5></button>
 
 <style lang="scss">
   .center {
