@@ -25,8 +25,32 @@ type ChamberEvent = {
 };
 
 type EventAttendance = {
-  member: Member;
-  event: ChamberEvent;
+  memberId: number;
+  eventId: number;
+  eventTypeId: number;
+  startTime: string;
+  dateEntered: string;
+  title: string;
+  type: string;
+  points: number;
+  name: string;
+  guests: number;
+};
+
+type PointsTotal = {
+  memberId: number;
+  name: string;
+  total: number;
+};
+
+type PointsTotalWithEvents = PointsTotal & {
+  events: EventAttendance[];
+  guests: number;
+};
+
+type MonthTotalRsp = {
+  allEventsAttendance: EventAttendance[];
+  pointTotals: PointsTotal[];
 };
 
 type Alert = {
