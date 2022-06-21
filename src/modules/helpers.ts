@@ -100,3 +100,5 @@ export const debounce = function (func, wait, immediate) {
     }
   };
 };
+
+export const getFirstName = (name?: string) => (name || '').split(' ')[0];

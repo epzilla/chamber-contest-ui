@@ -1,5 +1,6 @@
 <script lang="ts">
   import format from 'date-fns/format';
+  import { getFirstName } from '../modules/helpers';
 
   export let currentMonth: string;
   export let totals: PointsTotalWithEvents[];
@@ -70,7 +71,9 @@
               </div>
             </div>
           {:else}
-            <em>{name} did not attend any events in {currentMonth}</em>
+            <em
+              >{getFirstName(name)} did not attend any events in {currentMonth}</em
+            >
           {/if}
         </div>
       </div>
