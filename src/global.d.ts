@@ -41,6 +41,7 @@ type PointsTotal = {
   memberId: number;
   name: string;
   total: number;
+  rank: number;
 };
 
 type PointsTotalWithEvents = PointsTotal & {

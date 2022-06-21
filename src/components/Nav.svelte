@@ -226,4 +226,12 @@
       z-index: -1;
     }
   }
+
+  @media screen and (max-width: 700px) {
+    .header {
+      h1 {
+        font-size: 18px;
+      }
+    }
+  }
 </style>
