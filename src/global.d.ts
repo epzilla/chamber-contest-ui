@@ -22,6 +22,7 @@ type ChamberEvent = {
   title: string;
   address?: string;
   notes?: string;
+  isAdHoc?: boolean;
 };
 
 type EventAttendance = {

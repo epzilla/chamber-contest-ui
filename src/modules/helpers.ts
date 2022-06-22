@@ -133,5 +133,5 @@ export function calculateTotalsForTimePeriod(json: TimePeriodTotalRsp) {
       }
     }
   });
-  return totals.concat(emptyTotals);
+  return totals.concat(emptyTotals).sort((a, b) => a.rank - b.rank);
 }

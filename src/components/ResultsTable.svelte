@@ -123,10 +123,6 @@
   .main-info > span {
     padding: 5px;
 
-    &.pad-left-20 {
-      padding-left: 20px;
-    }
-
     &:first-of-type {
       text-align: center;
     }
@@ -236,11 +232,6 @@
 
     .results-table {
       width: 95%;
-
-      .table-header-cell,
-      .main-info > span {
-        padding: 3px;
-      }
 
       .table-header,
       .main-info {
