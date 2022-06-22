@@ -4,6 +4,7 @@
 
   export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
+  export let isCurrent: boolean;
 
   let expandedRows: { [id: number]: boolean } = {};
 
@@ -72,7 +73,9 @@
             </div>
           {:else}
             <em
-              >{getFirstName(name)} did not attend any events in {timePeriod}</em
+              >{getFirstName(name)}
+              {isCurrent ? 'has not yet logged' : 'did not log'} any chamber activities
+              for {timePeriod}.</em
             >
           {/if}
         </div>

@@ -44,7 +44,7 @@
 
 <h2>{timePeriod} Chamber Points Contest Results</h2>
 
-<ResultsTable {totals} {timePeriod} />
+<ResultsTable {totals} {timePeriod} isCurrent />
 
 <hr />
 <a href={`/contest/yearly/${currentYear}`} class="style-as-button"

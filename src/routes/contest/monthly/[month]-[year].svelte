@@ -7,6 +7,7 @@
     try {
       const month = await page.params.month;
       const year = await page.params.year;
+      const now = new Date();
       const date = new Date();
       date.setFullYear(year, month - 1, 1);
       const rsp = await fetch(`${BASE_URL}totals/${month}/${year}`);
@@ -16,6 +17,7 @@
       return {
         props: {
           timePeriod,
+          isCurrent: now.getMonth() === month - 1 && now.getFullYear() === year,
           totals
         }
       };
@@ -33,8 +35,9 @@
 
   export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
+  export let isCurrent: boolean;
 </script>
 
 <h2>{timePeriod} Chamber Points Contest Results</h2>
 
-<ResultsTable {totals} {timePeriod} />
+<ResultsTable {totals} {timePeriod} {isCurrent} />

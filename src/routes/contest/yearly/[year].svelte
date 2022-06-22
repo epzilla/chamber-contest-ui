@@ -10,7 +10,8 @@
       const totals = calculateTotalsForTimePeriod(json);
       return {
         props: {
-          timePeriod: year.toString(),
+          timePeriod: year,
+          isCurrent: year === new Date().getFullYear().toString(),
           totals
         }
       };
@@ -28,8 +29,9 @@
 
   export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
+  export let isCurrent: boolean;
 </script>
 
 <h2>{timePeriod} Chamber Points Contest Results</h2>
 
-<ResultsTable {totals} {timePeriod} />
+<ResultsTable {totals} {timePeriod} {isCurrent} />
