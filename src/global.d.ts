@@ -63,3 +63,8 @@ type Alert = {
   clickable?: boolean;
   timeout?: number;
 };
+
+type ValidMonthEntry = {
+  month: number;
+  year: number;
+};

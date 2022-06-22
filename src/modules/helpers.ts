@@ -1,9 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-// import parseISO from 'date-fns/parseISO/index.js';
-// import formatDistance from 'date-fns/formatDistance/index.js';
-// import formatRelative from 'date-fns/formatRelative/index.js';
 import { DEVICE_TYPES } from './constants';
 
 export const lightenOrDarken = (col, amt) => {
@@ -134,4 +131,33 @@ export function calculateTotalsForTimePeriod(json: TimePeriodTotalRsp) {
     }
   });
   return totals.concat(emptyTotals).sort((a, b) => a.rank - b.rank);
+}
+
+export function getMonth(month: number) {
+  switch (month) {
+    case 1:
+      return 'January';
+    case 2:
+      return 'February';
+    case 3:
+      return 'March';
+    case 4:
+      return 'April';
+    case 5:
+      return 'May';
+    case 6:
+      return 'June';
+    case 7:
+      return 'July';
+    case 8:
+      return 'August';
+    case 9:
+      return 'September';
+    case 10:
+      return 'October';
+    case 11:
+      return 'November';
+    case 12:
+      return 'December';
+  }
 }

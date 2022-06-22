@@ -9,14 +9,19 @@
       const now = new Date();
       const timePeriod = format(now, 'MMMM Y');
       const currentYear = now.getFullYear();
+      const currentMonth = now.getMonth() + 1;
       const rsp = await fetch(`${BASE_URL}totals/current-month`);
-      const json: TimePeriodTotalRsp = await rsp.json();
-      const totals = calculateTotalsForTimePeriod(json);
+      const monthsRsp = await fetch(`${BASE_URL}valid-months`);
+      const totalsJson: TimePeriodTotalRsp = await rsp.json();
+      const validMonths: ValidMonthEntry[] = await monthsRsp.json();
+      const totals = calculateTotalsForTimePeriod(totalsJson);
       return {
         props: {
           timePeriod,
           currentYear,
-          totals
+          currentMonth,
+          totals,
+          validMonths
         }
       };
     } catch (err) {
@@ -29,9 +34,12 @@
 </script>
 
 <script lang="ts">
+  import { getMonth } from '../../modules/helpers';
   export let timePeriod: string;
   export let currentYear: number;
+  export let currentMonth: number;
   export let totals: PointsTotalWithEvents[];
+  export let validMonths: ValidMonthEntry[];
 </script>
 
 <h2>{timePeriod} Chamber Points Contest Results</h2>
@@ -43,4 +51,10 @@
   ><h4>View Year-to-date Totals</h4></a
 >
 <h4>View Previous Months:</h4>
-<button><h5>May 2022</h5></button>
+{#each validMonths as { month, year }}
+  {#if month !== currentMonth || year !== currentYear}
+    <a href={`/contest/monthly/${month}-${year}`} class="style-as-button"
+      ><h4>{getMonth(month)} {year}</h4></a
+    >
+  {/if}
+{/each}

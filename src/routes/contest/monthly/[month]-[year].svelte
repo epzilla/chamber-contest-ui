@@ -1,16 +1,21 @@
 <script context="module">
   import { BASE_URL } from '../../../modules/constants';
+  import format from 'date-fns/format';
   import { calculateTotalsForTimePeriod } from '../../../modules/helpers';
 
   export async function load({ fetch, page }) {
     try {
+      const month = await page.params.month;
       const year = await page.params.year;
-      const rsp = await fetch(`${BASE_URL}yearly-totals/${year}`);
+      const date = new Date();
+      date.setFullYear(year, month - 1, 1);
+      const rsp = await fetch(`${BASE_URL}totals/${month}/${year}`);
       const json = await rsp.json();
       const totals = calculateTotalsForTimePeriod(json);
+      const timePeriod = format(date, 'MMMM Y');
       return {
         props: {
-          timePeriod: year.toString(),
+          timePeriod,
           totals
         }
       };
