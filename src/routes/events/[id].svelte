@@ -28,6 +28,8 @@
   import { onDestroy } from 'svelte';
   import AddToCalendarButton from '../../components/AddToCalendarButton.svelte';
   import DateTime from '../../components/DateTime.svelte';
+  import PopModal from '../../components/PopModal.svelte';
+  import Stepper from '../../components/Stepper.svelte';
 
   export let event: ChamberEvent;
   export let attendees: Member[];
@@ -39,10 +41,12 @@
     m => !liveAttendeeList.find(a => a.id === m.id)
   );
 
-  let showingSelector = false;
+  let showAttendanceForm = false;
   let submitting = false;
   let listInitted = false;
   let selectedAttendee = null;
+  let guestCount = 0;
+  let addNames = false;
   let futureEventInterval;
 
   $: isFutureEvent = new Date(event.dateOfEvent) >= new Date();
@@ -82,7 +86,7 @@
       })
     }).then(() => {
       submitting = false;
-      showingSelector = false;
+      showAttendanceForm = false;
       const m = memberList.find(m => m.id === selectedAttendee);
       liveAttendeeList = [...liveAttendeeList, m];
       selectedAttendee = null;
@@ -93,6 +97,23 @@
   function onSelectChange(e: Event) {
     const select = e.target as HTMLSelectElement;
     selectedAttendee = parseInt(select.value);
+  }
+
+  function onAttendanceFormToggle() {
+    showAttendanceForm = !showAttendanceForm;
+    guestCount = 0;
+    addNames = false;
+  }
+
+  function onGuestCountChange(n: number) {
+    guestCount = n;
+    if (n === 0) {
+      addNames = false;
+    }
+  }
+
+  function onAddNamesToggle() {
+    addNames = !addNames;
   }
 </script>
 
@@ -112,27 +133,64 @@
       {#each liveAttendeeList as attendee}
         <p>{attendee.name}</p>
       {/each}
-
-      {#if showingSelector}
-        <div class="member-select-control">
-          <select class="member-select" on:change={onSelectChange}>
-            {#each nonAttendees as attendee}
-              <option value={attendee.id}>{attendee.name}</option>
-            {/each}
-          </select>
+      <button on:click={() => (showAttendanceForm = true)}>Mark Attended</button
+      >
+      <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
+        <div class="attendance-form">
+          <h3>Claim your contest points for attending {event.title}!</h3>
+          <div class="form-group">
+            <label for="member-select">Attendee:</label>
+            <select
+              name="member-select"
+              class="member-select"
+              on:change={onSelectChange}
+            >
+              {#each nonAttendees as attendee}
+                <option value={attendee.id}>{attendee.name}</option>
+              {/each}
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="">Guests:</label>
+            <Stepper min={0} onChange={onGuestCountChange} value={guestCount} />
+          </div>
+          {#if guestCount > 0}
+            <div class="form-group">
+              <label for="add-names">Add Guest Names? (optional)</label>
+              <input
+                type="checkbox"
+                name="add-names"
+                value={addNames}
+                on:change={onAddNamesToggle}
+              />
+            </div>
+            {#if addNames}
+              <div class="form-group">
+                {#each [...Array(guestCount)] as x, i}
+                  <label for={`guest-name-${i}`}>Guest {i + 1}:</label>
+                  <input
+                    class="name-input"
+                    type="text"
+                    name={`guest-name-${i}`}
+                  />
+                {/each}
+              </div>
+            {/if}
+          {/if}
           <button
-            class="primary"
+            class="secondary"
             on:click={onSubmit}
             disabled={submitting || !selectedAttendee}
-            style="margin: 5px">✔ Count Me!</button
+            style="margin-bottom: 8px"
           >
-          <button class="x-btn" on:click={() => (showingSelector = false)}
-            >&times;</button
+            <span class="fa fa-check" />Count Me!</button
+          >
+          <button
+            on:click={onAttendanceFormToggle}
+            disabled={submitting || !selectedAttendee}>Cancel</button
           >
         </div>
-      {:else}
-        <button on:click={() => (showingSelector = true)}>Mark Attended</button>
-      {/if}
+      </PopModal>
     {:else}
       <h4>
         Once this event begins, you can visit this page to mark your attendance
@@ -143,11 +201,6 @@
 {/if}
 
 <style lang="scss">
-  .member-select-control {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
   .member-select {
     min-width: 250px;
     height: 40px;
@@ -162,5 +215,37 @@
     font-weight: 900;
     font-size: 22px;
     padding-bottom: 11px;
+  }
+  .attendance-form {
+    display: flex;
+    flex-direction: column;
+    border: 8px solid;
+    border-image: linear-gradient(to left, #743ad5, #d53a9d) 1;
+    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+    height: 100%;
+    width: 100%;
+    padding: 20px;
+    overflow: auto;
+
+    .form-group {
+      margin-bottom: 25px;
+
+      label {
+        margin-bottom: 5px;
+      }
+      input {
+        height: unset;
+
+        &[type='checkbox'] {
+          height: 24px;
+          width: 24px;
+        }
+
+        &.name-input {
+          border: 1px solid #ccc;
+          height: 30px;
+        }
+      }
+    }
   }
 </style>
