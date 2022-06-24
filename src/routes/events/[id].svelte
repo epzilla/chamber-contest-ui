@@ -48,6 +48,7 @@
   let guestCount = 0;
   let addNames = false;
   let futureEventInterval;
+  let guestNames = [];
 
   $: isFutureEvent = new Date(event.dateOfEvent) >= new Date();
 
@@ -82,7 +83,9 @@
       },
       body: JSON.stringify({
         memberId: selectedAttendee,
-        eventId: event.id
+        eventId: event.id,
+        guestCount,
+        guests: guestNames?.map(e => e.value) || []
       })
     }).then(() => {
       submitting = false;
@@ -172,6 +175,7 @@
                     class="name-input"
                     type="text"
                     name={`guest-name-${i}`}
+                    bind:this={guestNames[i]}
                   />
                 {/each}
               </div>

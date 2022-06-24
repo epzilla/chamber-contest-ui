@@ -38,7 +38,7 @@
           <span>{rank}</span>
           <span>{name}</span>
           <span class="center">{events.length}</span>
-          <span class="center">{guests}</span>
+          <span class="center">{guests || 0}</span>
           <span class="center bold">{total}</span>
           <button class="expander" on:click={() => toggleRow(memberId)}
             ><span class={`fa fa-chevron-down`} /></button
@@ -65,7 +65,7 @@
                   <div class="events-table-row">
                     <div>{title}</div>
                     <div>{format(new Date(startTime), 'MM/d')}</div>
-                    <div>{guests}</div>
+                    <div>{guests || 0}</div>
                     <div class="bold">{points}</div>
                   </div>
                 {/each}
