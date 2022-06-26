@@ -31,6 +31,7 @@
   import DateTime from '../../components/DateTime.svelte';
   import PopModal from '../../components/PopModal.svelte';
   import Stepper from '../../components/Stepper.svelte';
+  import Toggle from '../../components/Toggle.svelte';
   import { user } from '../../modules/stores';
   import { getFirstName } from '../../modules/helpers';
 
@@ -47,7 +48,7 @@
   let showAttendanceForm = false;
   let submitting = false;
   let listInitted = false;
-  let selectedAttendee = $user.id ?? null;
+  let selectedAttendee = $user?.id ?? null;
   let guestCount = 0;
   let addNames = false;
   let futureEventInterval;
@@ -55,7 +56,7 @@
 
   $: isFutureEvent = new Date(event.dateOfEvent) >= new Date();
 
-  $: userDidAttend = liveAttendeeList.find(a => a.id === $user.id);
+  $: userDidAttend = liveAttendeeList.find(a => a.id === $user?.id);
 
   $: {
     if (liveMemberList?.length && liveAttendeeList && event && !listInitted) {
@@ -120,8 +121,8 @@
     }
   }
 
-  function onAddNamesToggle() {
-    addNames = !addNames;
+  function onAddNamesToggle(val) {
+    addNames = val;
   }
 </script>
 
@@ -141,7 +142,7 @@
       {#each liveAttendeeList as attendee}
         <p>
           <span class="fa fa-check-circle" />
-          <span class={attendee.id === $user.id ? 'my-user' : ''}
+          <span class={attendee.id === $user?.id ? 'my-user' : ''}
             >{attendee.name}</span
           >
         </p>
@@ -156,7 +157,7 @@
       <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
         <AttendanceFormLayout>
           <h3>
-            {getFirstName($user.name)}, claim your contest points for attending {event.title}!
+            {getFirstName($user?.name)}, claim your contest points for attending {event.title}!
           </h3>
           <div class="form-group">
             <label for="">Did you bring any guests?</label>
@@ -165,11 +166,10 @@
           {#if guestCount > 0}
             <div class="form-group">
               <label for="add-names">Add Guest Names? (optional)</label>
-              <input
-                type="checkbox"
-                name="add-names"
+              <Toggle
+                id="add-names"
                 value={addNames}
-                on:change={onAddNamesToggle}
+                onChange={onAddNamesToggle}
               />
             </div>
             {#if addNames}

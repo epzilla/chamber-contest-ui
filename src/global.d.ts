@@ -9,6 +9,8 @@ type EventType = {
 type Member = {
   id: number;
   name: string;
+  isAdmin?: boolean;
+  isActive?: boolean;
 };
 
 type ChamberEvent = {

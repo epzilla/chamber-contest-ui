@@ -21,7 +21,7 @@
 
 <script lang="ts">
   export let memberList: Member[];
-  let selectedMember: Member | null = null;
+  let selectedMember: Member | null = memberList[0];
   function onSelectChange(e) {
     selectedMember = memberList.find(m => m.id.toString() === e.target.value);
   }

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 export const WS_BASE_URL = 'wss://pong-api.herokuapp.com';
-export const BASE_URL = 'http://localhost:3003/';
+export const BASE_URL = 'http://192.168.1.8:3003/';
 export const DEVICE_TYPES = {
   MOBILE_DEVICE: 'Mobile',
   TABLET_DEVICE: 'Tablet',
@@ -15,7 +15,8 @@ export const ROUTES = [
   { title: 'Upcoming Events', href: '/events/upcoming' },
   { title: 'Past Events', href: '/events/past' },
   { title: 'Points Contest', href: '/contest' },
-  { title: 'Log Out', href: '/logout' }
+  { title: 'Log Out', href: '/logout' },
+  { title: 'Admin', href: '/admin', isAdmin: true }
 ];
 
 // Websocket message types

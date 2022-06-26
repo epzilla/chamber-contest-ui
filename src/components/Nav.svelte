@@ -24,13 +24,15 @@
   <a href="/" tabindex="0"><h1>{SITE_TITLE}</h1></a>
   <nav class={menu ? 'show' : 'hide'}>
     {#if $user}
-      {#each shownRoutes as { href, title }}
-        <a
-          {href}
-          {title}
-          class:active={view === href}
-          on:click={() => (menu = false)}>{title}</a
-        >
+      {#each shownRoutes as { href, title, isAdmin }}
+        {#if $user.isAdmin || !isAdmin}
+          <a
+            {href}
+            {title}
+            class:active={view === href}
+            on:click={() => (menu = false)}>{title}</a
+          >
+        {/if}
       {/each}
     {/if}
   </nav>
@@ -59,7 +61,7 @@
     h1 {
       margin: 0 1rem 0 0;
       padding: 0;
-      font-size: 24px;
+      font-size: 20px;
       line-height: 56px;
       font-weight: 400;
       color: var(--secondary);
