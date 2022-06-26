@@ -26,10 +26,13 @@
 
 <script lang="ts">
   import ResultsTable from '../../../components/ResultsTable.svelte';
+  import { attendanceUpdates } from '../../../modules/websockets';
 
   export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
   export let isCurrent: boolean;
+
+  attendanceUpdates.subscribe(console.log);
 </script>
 
 <h2>{timePeriod} Chamber Points Contest Results</h2>

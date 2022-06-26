@@ -35,11 +35,55 @@
 
 <script lang="ts">
   import { getMonth } from '../../modules/helpers';
+  import { attendanceUpdates } from '../../modules/websockets';
   export let timePeriod: string;
   export let currentYear: number;
   export let currentMonth: number;
   export let totals: PointsTotalWithEvents[];
   export let validMonths: ValidMonthEntry[];
+
+  function isThisMonth(timeString: string) {
+    const time = new Date(timeString);
+    return (
+      time.getFullYear() === currentYear && time.getMonth() + 1 === currentMonth
+    );
+  }
+
+  function recalculate(newTotals: PointsTotalWithEvents[]) {
+    newTotals.sort((a, b) => b.total - a.total);
+    for (let i = 0; i < newTotals.length; i++) {
+      const current = newTotals[i];
+      if (i > 0) {
+        const previous = newTotals[i - 1];
+        if (previous && current.total === previous.total) {
+          current.rank = previous.rank;
+        } else {
+          current.rank = i + 1;
+        }
+      } else {
+        current.rank = 1;
+      }
+      totals = newTotals;
+    }
+  }
+
+  attendanceUpdates.subscribe(({ type, event }) => {
+    if (isThisMonth(event.startTime)) {
+      let i = totals.findIndex(t => t.memberId === event.memberId);
+      if (i !== -1) {
+        if (type === 'add') {
+          const newTotals = [...totals];
+          const newTotal = { ...newTotals[i] };
+          newTotal.total =
+            parseInt(newTotal.total as unknown as string) + event.points;
+          newTotal.events = [...newTotal.events, event];
+          newTotal.guests = newTotal.guests + event.guests;
+          newTotals[i] = newTotal;
+          recalculate(newTotals);
+        }
+      }
+    }
+  });
 </script>
 
 <h2>{timePeriod} Chamber Points Contest Results</h2>

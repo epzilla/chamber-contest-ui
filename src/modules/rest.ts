@@ -21,8 +21,7 @@ const post = async (url, body) => {
     },
     body: JSON.stringify(body)
   });
-  const data = await res.json();
-  return data;
+  return res.status;
 };
 
 const put = async (url, data) => {

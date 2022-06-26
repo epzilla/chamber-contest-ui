@@ -38,6 +38,12 @@ type EventAttendance = {
   points: number;
   name: string;
   guests: number;
+  business: string;
+};
+
+type EventAttendanceUpdate = {
+  type: 'add' | 'remove' | 'update';
+  event: EventAttendance;
 };
 
 type PointsTotal = {
@@ -53,6 +59,7 @@ type PointsTotalWithEvents = PointsTotal & {
 };
 
 type TimePeriodTotalRsp = {
+  events: ChamberEvent[];
   allEventsAttendance: EventAttendance[];
   pointTotals: PointsTotal[];
 };

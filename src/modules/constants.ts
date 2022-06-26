@@ -14,7 +14,7 @@ export const ROUTES = [
 // Websocket message types
 export enum Msg {
   USER_UPDATED = 'USER_UPDATED',
-  EVENT_ATTENDANCE_UDATED = 'EVENT_ATTENDANCE_UDATED'
+  EVENT_ATTENDANCE_UPDATED = 'EVENT_ATTENDANCE_UPDATED'
 }
 
 // strings

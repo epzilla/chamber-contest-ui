@@ -1,15 +1,10 @@
 import { Subject } from 'rxjs';
-import { WS_BASE_URL } from './constants';
+import { Msg, WS_BASE_URL } from './constants';
 import { deviceId } from './stores/devices';
-
-enum Msg {
-  USER_UPDATED = 'USER_UPDATED',
-  EVENT_ATTENDANCE_UDATED = 'EVENT_ATTENDANCE_UDATED'
-}
 
 type RawSocketUpdate = {
   type: Msg;
-  data: any;
+  data: string;
   originDeviceId: string;
 };
 
@@ -22,7 +17,7 @@ let ws: WebSocket = null;
 let initialized = false;
 let socketId: string;
 
-export const attendanceUpdates = new Subject<ChamberEvent>();
+export const attendanceUpdates = new Subject<EventAttendanceUpdate>();
 export const socket = new Subject<SocketUpdate<unknown>>();
 
 const createWsConnection = devId => {

@@ -1,7 +1,7 @@
 import { Subject } from 'rxjs';
 import { Msg } from '../constants';
-import { socket } from '../websockets';
-import { deviceId } from './';
+import { attendanceUpdates, socket } from '../websockets';
+import { deviceId } from './devices';
 
 export const userUpdates = new Subject<Member>();
 
@@ -9,8 +9,13 @@ if (typeof window !== 'undefined') {
   deviceId.subscribe(devId => {
     if (devId) {
       socket.subscribe(({ type, data }) => {
-        if (type === Msg.USER_UPDATED) {
-          userUpdates.next(data as Member);
+        switch (type) {
+          case Msg.USER_UPDATED:
+            userUpdates.next(data as Member);
+            break;
+          case Msg.EVENT_ATTENDANCE_UPDATED:
+            attendanceUpdates.next(data as EventAttendanceUpdate);
+            break;
         }
       });
     }
