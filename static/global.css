@@ -198,6 +198,11 @@ main > h1 {
   text-align: center;
 }
 
+.main {
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
 input,
 textarea,
 select,

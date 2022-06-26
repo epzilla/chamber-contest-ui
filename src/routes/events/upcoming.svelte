@@ -3,7 +3,6 @@
 
   export async function load({ fetch, page }) {
     try {
-      const id = await page.params.id;
       const eventResult = await fetch(`${BASE_URL}upcoming-events`);
       const events = await eventResult.json();
       return {

@@ -25,4 +25,4 @@ export const MATCH_FINISHED = 'match-finished';
 export const MATCH_STARTED = 'match-started';
 export const SCORE_UPDATE = 'score-update';
 
-export const SITE_TITLE = 'Chamber Events Tracker';
+export const SITE_TITLE = 'Home Run Challenge';

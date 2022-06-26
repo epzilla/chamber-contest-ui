@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { writable } from 'svelte/store';
+import { writable, readable } from 'svelte/store';
 import { generateGuid } from './helpers';
 
 export const alerts = writable([]);
@@ -35,3 +35,9 @@ export const dismissAlert = (id: string) => {
 };
 
 export const currentMatch = writable({});
+
+const userJson =
+  typeof localStorage !== 'undefined' ? localStorage.getItem('user') : null;
+export const user = readable<Member | null>(
+  userJson ? JSON.parse(userJson) : null
+);

@@ -25,11 +25,14 @@
 </script>
 
 <script lang="ts">
+  import AttendanceFormLayout from '../../components/AttendanceFormLayout.svelte';
   import { onDestroy } from 'svelte';
   import AddToCalendarButton from '../../components/AddToCalendarButton.svelte';
   import DateTime from '../../components/DateTime.svelte';
   import PopModal from '../../components/PopModal.svelte';
   import Stepper from '../../components/Stepper.svelte';
+  import { user } from '../../modules/stores';
+  import { getFirstName } from '../../modules/helpers';
 
   export let event: ChamberEvent;
   export let attendees: Member[];
@@ -44,13 +47,15 @@
   let showAttendanceForm = false;
   let submitting = false;
   let listInitted = false;
-  let selectedAttendee = null;
+  let selectedAttendee = $user.id ?? null;
   let guestCount = 0;
   let addNames = false;
   let futureEventInterval;
   let guestNames = [];
 
   $: isFutureEvent = new Date(event.dateOfEvent) >= new Date();
+
+  $: userDidAttend = liveAttendeeList.find(a => a.id === $user.id);
 
   $: {
     if (liveMemberList?.length && liveAttendeeList && event && !listInitted) {
@@ -84,8 +89,8 @@
       body: JSON.stringify({
         memberId: selectedAttendee,
         eventId: event.id,
-        guestCount,
-        guests: guestNames?.map(e => e.value) || []
+        guests: guestCount,
+        guestNames: guestNames?.map(e => e.value) || []
       })
     }).then(() => {
       submitting = false;
@@ -134,27 +139,27 @@
     {#if !isFutureEvent}
       <h4>Chamber Attendees:</h4>
       {#each liveAttendeeList as attendee}
-        <p>{attendee.name}</p>
+        <p>
+          <span class="fa fa-check-circle" />
+          <span class={attendee.id === $user.id ? 'my-user' : ''}
+            >{attendee.name}</span
+          >
+        </p>
       {/each}
-      <button on:click={() => (showAttendanceForm = true)}>Mark Attended</button
+
+      {#if userDidAttend}
+        <p class="attendance-highlight">Your attendance earned you X points!</p>
+      {/if}
+      <button on:click={() => (showAttendanceForm = true)}
+        >{userDidAttend ? 'Edit Attendance' : 'Mark Attended'}</button
       >
       <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
-        <div class="attendance-form">
-          <h3>Claim your contest points for attending {event.title}!</h3>
+        <AttendanceFormLayout>
+          <h3>
+            {getFirstName($user.name)}, claim your contest points for attending {event.title}!
+          </h3>
           <div class="form-group">
-            <label for="member-select">Attendee:</label>
-            <select
-              name="member-select"
-              class="member-select"
-              on:change={onSelectChange}
-            >
-              {#each nonAttendees as attendee}
-                <option value={attendee.id}>{attendee.name}</option>
-              {/each}
-            </select>
-          </div>
-          <div class="form-group">
-            <label for="">Guests:</label>
+            <label for="">Did you bring any guests?</label>
             <Stepper min={0} onChange={onGuestCountChange} value={guestCount} />
           </div>
           {#if guestCount > 0}
@@ -193,7 +198,7 @@
             on:click={onAttendanceFormToggle}
             disabled={submitting || !selectedAttendee}>Cancel</button
           >
-        </div>
+        </AttendanceFormLayout>
       </PopModal>
     {:else}
       <h4>
@@ -210,46 +215,17 @@
     height: 40px;
     font-size: 1rem;
   }
-  .x-btn {
-    border-radius: 50%;
-    height: 30px;
-    width: 30px;
-    background-color: #00000036;
-    color: white;
-    font-weight: 900;
-    font-size: 22px;
-    padding-bottom: 11px;
+
+  .my-user {
+    font-weight: bold;
   }
-  .attendance-form {
-    display: flex;
-    flex-direction: column;
-    border: 8px solid;
-    border-image: linear-gradient(to left, #743ad5, #d53a9d) 1;
-    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
-    height: 100%;
+
+  .attendance-highlight {
+    font-weight: bold;
     width: 100%;
-    padding: 20px;
-    overflow: auto;
-
-    .form-group {
-      margin-bottom: 25px;
-
-      label {
-        margin-bottom: 5px;
-      }
-      input {
-        height: unset;
-
-        &[type='checkbox'] {
-          height: 24px;
-          width: 24px;
-        }
-
-        &.name-input {
-          border: 1px solid #ccc;
-          height: 30px;
-        }
-      }
-    }
+    padding: 10px;
+    background-color: rgb(33, 162, 93);
+    border-radius: 3px;
+    color: white;
   }
 </style>
