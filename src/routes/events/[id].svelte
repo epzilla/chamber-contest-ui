@@ -25,8 +25,8 @@
 </script>
 
 <script lang="ts">
-  import AttendanceFormLayout from '../../components/AttendanceFormLayout.svelte';
   import { onDestroy } from 'svelte';
+  import AttendanceFormLayout from '../../components/AttendanceFormLayout.svelte';
   import AddToCalendarButton from '../../components/AddToCalendarButton.svelte';
   import DateTime from '../../components/DateTime.svelte';
   import PopModal from '../../components/PopModal.svelte';
@@ -34,6 +34,7 @@
   import Toggle from '../../components/Toggle.svelte';
   import { user } from '../../modules/stores';
   import { getFirstName } from '../../modules/helpers';
+  import rest from '../../modules/rest';
 
   export let event: ChamberEvent;
   export let attendees: Member[];
@@ -80,27 +81,23 @@
     }
   });
 
-  function onSubmit() {
+  async function onSubmit() {
     submitting = true;
-    fetch(`${BASE_URL}events/mark-attendance`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
+    try {
+      await rest.post(`events/mark-attendance`, {
         memberId: selectedAttendee,
         eventId: event.id,
         guests: guestCount,
         guestNames: guestNames?.map(e => e.value) || []
-      })
-    }).then(() => {
-      submitting = false;
+      });
       showAttendanceForm = false;
       const m = memberList.find(m => m.id === selectedAttendee);
       liveAttendeeList = [...liveAttendeeList, m];
       selectedAttendee = null;
       listInitted = false;
-    });
+    } finally {
+      submitting = false;
+    }
   }
 
   function onSelectChange(e: Event) {

@@ -20,6 +20,7 @@
 </script>
 
 <script lang="ts">
+  import { generateGuid } from '../modules/helpers';
   import PopModal from '../components/PopModal.svelte';
   import EventBlock from '../components/EventBlock.svelte';
   import AttendanceFormLayout from '../components/AttendanceFormLayout.svelte';
@@ -29,6 +30,14 @@
 
   function onToggleEventForm() {
     showAddEventForm = !showAddEventForm;
+  }
+
+  if (typeof window !== 'undefined') {
+    let deviceId = localStorage.getItem('deviceId');
+    if (!deviceId) {
+      deviceId = generateGuid();
+      localStorage.setItem('deviceId', deviceId);
+    }
   }
 </script>
 
@@ -63,25 +72,12 @@
 </PopModal>
 
 <style lang="scss">
-  // .ad-hoc-event-btn {
-  //   position: fixed;
-  //   bottom: 0;
-  //   right: 0;
-  //   background: #fff;
-  //   border: 1px solid #ccc;
-  //   padding: 10px;
-  //   border-radius: 5px;
-  //   font-size: 1.2em;
-  //   cursor: pointer;
-  // }
-
   @media screen and (max-width: 700px) {
     .ad-hoc-event-btn {
       position: fixed;
       bottom: 1rem;
       right: 1rem;
       left: 1rem;
-      // background: #fff;
       border: 1px solid #ccc;
       padding: 10px;
       border-radius: 5px;

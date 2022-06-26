@@ -1,10 +1,9 @@
 <script lang="ts">
   import { getStores } from '$app/stores';
-  import { user } from '../modules/stores';
+  import { user } from '../modules/stores/users';
   import { ROUTES, SITE_TITLE } from '../modules/constants';
   const { page } = getStores();
 
-  // export let user: Member;
   let view = '';
   let menu = false;
   $: backdropClass = `nav-modal-backdrop${menu ? ' show' : ''}`;
@@ -21,7 +20,7 @@
   {#if $user}
     <button class="btn menu-btn" on:click={toggleMenu}>Menu</button>
   {/if}
-  <a href="/" tabindex="0"><h1>{SITE_TITLE}</h1></a>
+  <a href={$user ? '/' : '#'} tabindex="0"><h1>{SITE_TITLE}</h1></a>
   <nav class={menu ? 'show' : 'hide'}>
     {#if $user}
       {#each shownRoutes as { href, title, isAdmin }}

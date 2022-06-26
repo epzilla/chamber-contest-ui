@@ -1,7 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-import { DEVICE_TYPES } from './constants';
 
 export const lightenOrDarken = (col, amt) => {
   let usePound = false;
@@ -46,31 +45,6 @@ export const generateGuid = () => {
       v = c === 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
-};
-
-export const getBestGuessDevice = () => {
-  if (typeof window !== 'undefined') {
-    const width = window.innerWidth;
-    const height = window.innerHeight;
-    const greaterDimension = height >= width ? height : width;
-    const lesserDimension = greaterDimension === height ? width : height;
-    const hiDpi =
-      window.matchMedia('(min-resolution: 120dpi)').matches ||
-      window.matchMedia('(-webkit-min-device-pixel-ratio: 1.3)').matches;
-
-    if (greaterDimension < 800) {
-      return DEVICE_TYPES.MOBILE_DEVICE;
-    } else if (greaterDimension < 1200 && lesserDimension < 800) {
-      return DEVICE_TYPES.TABLET_DEVICE;
-    } else if (
-      (greaterDimension < 1800 && lesserDimension >= 800) ||
-      (greaterDimension < 2400 && hiDpi)
-    ) {
-      return DEVICE_TYPES.LAPTOP_DEVICE;
-    }
-  }
-
-  return DEVICE_TYPES.OTHER_DEVICE;
 };
 
 export const isEmpty = (obj: any) =>

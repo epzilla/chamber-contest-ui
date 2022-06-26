@@ -20,7 +20,13 @@
 </script>
 
 <script lang="ts">
+  import { members } from '../modules/stores';
+
   export let memberList: Member[];
+  members.subscribe(m => {
+    memberList = m;
+  });
+
   let selectedMember: Member | null = memberList[0];
   function onSelectChange(e) {
     selectedMember = memberList.find(m => m.id.toString() === e.target.value);

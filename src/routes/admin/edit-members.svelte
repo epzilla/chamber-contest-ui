@@ -22,6 +22,7 @@
 </script>
 
 <script lang="ts">
+  import rest from '../../modules/rest';
   import Toggle from '../../components/Toggle.svelte';
   import { onDestroy, onMount } from 'svelte';
 
@@ -62,14 +63,8 @@
     try {
       const member = memberList.find(m => m.id == data[rowIndex][0]);
       if (member) {
-        await fetch(`${BASE_URL}members/toggle-admin`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: member.id
-          })
+        await rest.put(`members/toggle-admin`, {
+          id: member.id
         });
       }
     } catch (err) {
@@ -83,14 +78,8 @@
     try {
       const member = memberList.find(m => m.id == data[rowIndex][0]);
       if (member) {
-        await fetch(`${BASE_URL}members/toggle-active`, {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-            id: member.id
-          })
+        await rest.put(`members/toggle-active`, {
+          id: member.id
         });
       }
     } catch (err) {
@@ -105,13 +94,7 @@
       if (member) {
         if (member.name != data[rowIndex][1]) {
           member.name = data[rowIndex][1] as string;
-          await fetch(`${BASE_URL}members/edit-member`, {
-            method: 'PUT',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(member)
-          });
+          await rest.put(`members/edit-member`, member);
         }
       }
     } catch (err) {

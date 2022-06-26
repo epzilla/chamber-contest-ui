@@ -1,32 +1,46 @@
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
+import { Subject } from 'rxjs';
 import { WS_BASE_URL } from './constants';
+import { deviceId } from './stores/devices';
 
-const callbacks = {};
-let ws = null;
-let deviceId = null;
+enum Msg {
+  USER_UPDATED = 'USER_UPDATED',
+  EVENT_ATTENDANCE_UDATED = 'EVENT_ATTENDANCE_UDATED'
+}
+
+type RawSocketUpdate = {
+  type: Msg;
+  data: any;
+  originDeviceId: string;
+};
+
+export type SocketUpdate<T> = {
+  type: Msg;
+  data: T;
+};
+
+let ws: WebSocket = null;
 let initialized = false;
-let devMode = false;
+let socketId: string;
 
-const createWsConnection = () => {
+export const attendanceUpdates = new Subject<ChamberEvent>();
+export const socket = new Subject<SocketUpdate<unknown>>();
+
+const createWsConnection = devId => {
+  socketId = devId;
   ws = new WebSocket(WS_BASE_URL);
   ws.onerror = e => console.error(e);
   ws.onopen = () =>
-    console.debug(
-      `WebSocket connection established for device ID: ${deviceId}`
-    );
+    console.debug(`WebSocket connection established for device ID: ${devId}`);
   ws.onclose = () => {
     console.debug('WebSocket connection closed. Attempting to re-connect...');
-    createWsConnection();
+    createWsConnection(devId);
   };
   ws.onmessage = m => {
-    if (devMode && m) {
-      console.debug(`[Websockets] Message received`, m);
-    }
     if (m?.data) {
       const json = JSON.parse(m.data);
       if (json?.data) {
         fireCallbacks(json);
-      } else if (devMode && json) {
+      } else if (json) {
         console.debug('[Websockets] Message improperly formatted', json);
       }
     }
@@ -34,30 +48,12 @@ const createWsConnection = () => {
   initialized = true;
 };
 
-const fireCallbacks = ({ type, data, originDeviceId }) => {
-  if (devMode) {
-    console.debug({
-      type,
-      data,
-      callbacks,
-      originDeviceId,
-      deviceId
-    });
-  }
-  if (
-    type &&
-    data &&
-    callbacks[type] &&
-    callbacks[type].length > 0 &&
-    (!originDeviceId || originDeviceId !== deviceId)
-  ) {
+const fireCallbacks = ({ type, data, originDeviceId }: RawSocketUpdate) => {
+  if (type && data && (!originDeviceId || originDeviceId !== socketId)) {
     try {
       const json = JSON.parse(data);
       if (json) {
-        if (devMode) {
-          console.info(json);
-        }
-        callbacks[type].forEach(cb => cb(json));
+        socket.next({ type, data: json });
       }
     } catch (e) {
       console.error(e);
@@ -65,51 +61,13 @@ const fireCallbacks = ({ type, data, originDeviceId }) => {
   }
 };
 
-const WebSockets = {
-  init: (devId: number, useDevMode: boolean) => {
-    return new Promise<void>((resolve, reject) => {
-      if (initialized) {
-        resolve();
-      } else {
-        deviceId = devId;
-        devMode = !!useDevMode;
-        try {
-          createWsConnection();
-          initialized = true;
-          resolve();
-        } catch (e) {
-          reject(e);
-        }
-      }
-    });
-  },
-
-  subscribe: (type, cb) => {
-    console.debug(`Subscribing to: ${type}`);
-    if (callbacks[type]) {
-      callbacks[type].push(cb);
+deviceId.subscribe(devId => {
+  if (devId) {
+    if (!initialized) {
+      createWsConnection(devId);
     } else {
-      callbacks[type] = [cb];
+      ws.close();
+      createWsConnection(devId);
     }
-  },
-
-  unsubscribe: (type, cb) => {
-    if (callbacks[type]) {
-      console.debug(`Unsubscribing to: ${type}`);
-      const i = callbacks[type].findIndex(fn => fn === cb);
-      if (i !== -1) {
-        callbacks[type].splice(i, 1);
-      }
-    }
-  },
-
-  setDeviceId: id => {
-    deviceId = id;
-  },
-
-  send: (type, msg) => {
-    ws.send(JSON.stringify({ type, msg, deviceId }));
   }
-};
-
-export default WebSockets;
+});
