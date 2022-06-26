@@ -1,6 +1,8 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
 import { writable } from 'svelte/store';
+import { BASE_URL, USER_UPDATED } from './constants';
 import { generateGuid } from './helpers';
+import WebSockets from './websockets';
 
 export const alerts = writable([]);
 
@@ -36,8 +38,64 @@ export const dismissAlert = (id: string) => {
 
 export const currentMatch = writable({});
 
-const userJson =
-  typeof localStorage !== 'undefined' ? localStorage.getItem('user') : null;
-export const user = writable<Member | null>(
-  userJson ? JSON.parse(userJson) : null
-);
+let userObj: Member;
+
+if (typeof window !== 'undefined') {
+  const userString = localStorage.getItem('user');
+  if (userString) {
+    userObj = JSON.parse(userString);
+  }
+
+  if (userObj && !userObj.isActive) {
+    localStorage.removeItem('user');
+    window.location.href = '/welcome';
+  } else if (!userObj?.isActive && window.location.pathname !== '/welcome') {
+    window.location.href = '/welcome';
+  } else if (userObj?.isActive && window.location.pathname === '/welcome') {
+    window.location.href = '/';
+  }
+}
+
+export const user = writable<Member | null>(userObj);
+
+if (userObj) {
+  fetch(`${BASE_URL}members/member/${userObj.id}`)
+    .then(res => {
+      if (res.ok) {
+        return res.json();
+      }
+    })
+    .then((data: Member) => {
+      user.set(data);
+      userObj = data;
+      if (!data?.isActive) {
+        window.localStorage.removeItem('user');
+        window.location.href = '/welcome';
+      }
+    })
+    .catch(err => {
+      console.error(err);
+    });
+}
+
+function onUserUpdated(newUser: Member) {
+  if (
+    typeof window !== 'undefined' &&
+    userObj?.id &&
+    userObj.id === newUser.id
+  ) {
+    if (!newUser.isActive) {
+      localStorage.removeItem('user');
+      window.location.href = '/welcome';
+    } else {
+      localStorage.setItem('user', JSON.stringify(newUser));
+    }
+  }
+  user.set(newUser);
+}
+
+if (typeof window !== 'undefined') {
+  WebSockets.init(userObj?.id || Date.now(), false).then(() => {
+    WebSockets.subscribe(USER_UPDATED, onUserUpdated);
+  });
+}
