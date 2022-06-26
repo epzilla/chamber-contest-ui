@@ -14,7 +14,8 @@ export const ROUTES = [
   { title: 'Home', href: '/' },
   { title: 'Upcoming Events', href: '/events/upcoming' },
   { title: 'Past Events', href: '/events/past' },
-  { title: 'Points Contest', href: '/contest' }
+  { title: 'Points Contest', href: '/contest' },
+  { title: 'Log Out', href: '/logout' }
 ];
 
 // Websocket message types

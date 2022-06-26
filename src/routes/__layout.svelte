@@ -16,7 +16,7 @@
   }
 </script>
 
-<Nav {user} />
+<Nav />
 <main>
   <slot />
   <!-- <FixedAlerts /> -->
