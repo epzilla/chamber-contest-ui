@@ -5,6 +5,8 @@ import { user } from './users';
 type myEventsRsp = {
   attended: ChamberEvent[];
   unattended: ChamberEvent[];
+  attendedAdHoc: ChamberEvent[];
+  attendedNonAdHoc: ChamberEvent[];
 };
 
 export const pastEvents = writable<ChamberEvent[]>([]);
