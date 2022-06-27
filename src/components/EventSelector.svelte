@@ -1,8 +1,15 @@
 <script lang="ts">
-  import { pastEvents } from '../modules/stores/events';
+  import {
+    myEvents,
+    myUnattendedEvents,
+    pastEvents
+  } from '../modules/stores/events';
   import Svelecte from 'svelecte';
   import format from 'date-fns/format';
   export let selected = null;
+  export let useAttended = false;
+  export let useUnattended = false;
+  export let hideAdHoc = false;
 
   function labelRenderer(option: ChamberEvent) {
     return `
@@ -14,7 +21,11 @@
 
 {#if $pastEvents.length > 0}
   <Svelecte
-    options={$pastEvents}
+    options={useAttended
+      ? $myEvents
+      : useUnattended
+      ? $myUnattendedEvents
+      : $pastEvents}
     bind:value={selected}
     valueField="id"
     valueAsObject

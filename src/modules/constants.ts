@@ -17,5 +17,11 @@ export enum Msg {
   EVENT_ATTENDANCE_UPDATED = 'EVENT_ATTENDANCE_UPDATED'
 }
 
+export enum ActivityTypes {
+  CALL_EMAIL = 'CALL_EMAIL',
+  DELIVERY = 'DELIVERY',
+  EVENT = 'EVENT'
+}
+
 // strings
 export const SITE_TITLE = 'Home Run Challenge';

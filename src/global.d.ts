@@ -1,6 +1,6 @@
 /// <reference types="@sveltejs/kit" />
 type KVP = {
-  key: string;
+  key: string | enum;
   value: unknown;
 };
 

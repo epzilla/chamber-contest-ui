@@ -1,5 +1,5 @@
 <script context="module">
-  import { BASE_URL } from '../modules/constants';
+  import { ActivityTypes, BASE_URL } from '../modules/constants';
 
   export async function load({ fetch, context }) {
     try {
@@ -28,24 +28,24 @@
   import EventSelector from '../components/EventSelector.svelte';
   import Stepper from '../components/Stepper.svelte';
   import Toggle from '../components/Toggle.svelte';
+  import rest from '../modules/rest';
+  import { user } from '../modules/stores/users';
+  import { myEvents, myUnattendedEvents } from '../modules/stores/events';
 
   export let events: ChamberEvent[];
 
   let activityOptions: KVP[] = [
-    { key: 'call-email', value: 'I called/emailed someone' },
-    { key: 'delivery', value: 'I made a delivery' },
-    { key: 'event', value: 'I attended an event' }
+    { key: ActivityTypes.CALL_EMAIL, value: 'I called/emailed someone' },
+    { key: ActivityTypes.DELIVERY, value: 'I made a delivery' },
+    { key: ActivityTypes.EVENT, value: 'I attended an event' }
   ];
-  let chosenActivity: string | null = null;
-  let selectedEvent: string | null = null;
-  let showAddEventForm = false;
+  let chosenActivity: ActivityTypes | null = null;
+  let selectedEvent: ChamberEvent | null = null;
   let guestCount = 0;
-  let addNames = false;
   let guestNames = [];
-
-  $: {
-    console.info(`SELECTED EVENT:`, selectedEvent);
-  }
+  let addNames = false;
+  let showAddEventForm = false;
+  let submitting = false;
 
   function onToggleEventForm() {
     showAddEventForm = !showAddEventForm;
@@ -53,6 +53,42 @@
 
   function onGuestCountChange(count: number) {
     guestCount = count;
+  }
+
+  async function onSubmit() {
+    switch (chosenActivity) {
+      case ActivityTypes.CALL_EMAIL:
+      case ActivityTypes.DELIVERY:
+      case ActivityTypes.EVENT:
+        console.log({
+          activity: chosenActivity,
+          event: selectedEvent,
+          guestCount,
+          addNames,
+          guestNames: guestNames.map(g => g.value)
+        });
+        submitting = true;
+        try {
+          await rest.post(`events/mark-attendance`, {
+            memberId: $user?.id,
+            eventId: selectedEvent.id,
+            guests: guestCount,
+            guestNames: guestNames?.map(e => e.value) || [],
+            org: ''
+          });
+          myEvents.update(current => {
+            return [...current, selectedEvent];
+          });
+          myUnattendedEvents.update(current => {
+            return current.filter(e => e.id !== selectedEvent.id);
+          });
+          showAddEventForm = false;
+          selectedEvent = null;
+          submitting = false;
+        } finally {
+          submitting = false;
+        }
+    }
   }
 
   if (typeof window !== 'undefined') {
@@ -94,11 +130,11 @@
             onSelect={v => (chosenActivity = v.key)}
           />
         </div>
-        {#if chosenActivity === 'event'}
+        {#if chosenActivity === ActivityTypes.EVENT}
           <div class="event-form">
             <div class="form-group">
               <label>Which event did you attend?</label>
-              <EventSelector bind:selected={selectedEvent} />
+              <EventSelector bind:selected={selectedEvent} useUnattended />
             </div>
             {#if selectedEvent}
               <div class="form-group">
@@ -135,13 +171,13 @@
               {/if}
             {/if}
           </div>
-        {:else if chosenActivity === 'call-email'}
+        {:else if chosenActivity === ActivityTypes.CALL_EMAIL}
           <div class="call-email-form">
             <h4>Who did you call/email?</h4>
             <input type="text" placeholder="Name" />
             <input type="text" placeholder="Email" />
           </div>
-        {:else if chosenActivity === 'delivery'}
+        {:else if chosenActivity === ActivityTypes.DELIVERY}
           <div class="delivery-form">
             <h4>What did you deliver?</h4>
             <input type="text" placeholder="Item" />
@@ -150,7 +186,7 @@
         {/if}
       </div>
       <div class="bottom-row">
-        <button class="primary" on:click={onToggleEventForm}>
+        <button class="primary" on:click={onSubmit} disabled={submitting}>
           <span class="fa fa-check" />Count Me!</button
         >
         <button on:click={onToggleEventForm}>Cancel</button>
