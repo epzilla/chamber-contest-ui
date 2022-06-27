@@ -1,5 +1,6 @@
 <script lang="ts">
   import format from 'date-fns/format';
+  import { user } from '../modules/stores';
   import { getFirstName } from '../modules/helpers';
 
   export let timePeriod: string;
@@ -33,7 +34,11 @@
 
   <div class="table-body">
     {#each totals as { name, total, events, guests, memberId, rank }}
-      <div class={`expandable-row${expandedRows[memberId] ? ' expanded' : ''}`}>
+      <div
+        class="expandable-row"
+        class:my-user-row={$user?.id === memberId}
+        class:expanded={expandedRows[memberId]}
+      >
         <div class="main-info">
           <span>{rank}</span>
           <span>{name}</span>
@@ -162,7 +167,7 @@
     }
 
     &:hover {
-      background: #ff2882;
+      background: var(--accentColor);
       color: white;
     }
 
@@ -182,6 +187,14 @@
     &.expanded {
       background: linear-gradient(245deg, #28ffc8, #5f3cb1 50%);
       color: white;
+
+      &.my-user-row {
+        background: linear-gradient(245deg, #f0a4ed, #28ffc8 50%);
+
+        .main-info {
+          color: var(--colorDefaultText);
+        }
+      }
 
       .expanded-area {
         background: linear-gradient(245deg, #e5f5f5, #efe6ff 50%);
@@ -224,6 +237,27 @@
 
     &.expanded {
       display: flex;
+    }
+  }
+
+  .my-user-row {
+    background-color: #5dffd6;
+    font-weight: 600;
+    position: relative;
+
+    .expander {
+      background-color: #5dffd6;
+    }
+
+    &:before {
+      content: '';
+      width: 0;
+      left: 0;
+      position: absolute;
+      border-style: solid;
+      border-width: 8px 0 8px 8px;
+      border-color: transparent transparent transparent var(--accentColor);
+      top: 12px;
     }
   }
 
