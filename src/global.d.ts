@@ -1,4 +1,8 @@
 /// <reference types="@sveltejs/kit" />
+type KVP = {
+  key: string;
+  value: unknown;
+};
 
 type EventType = {
   id: number;
@@ -38,7 +42,8 @@ type EventAttendance = {
   points: number;
   name: string;
   guests: number;
-  business: string;
+  names: { name: string; org: string }[];
+  org: string;
 };
 
 type EventAttendanceUpdate = {

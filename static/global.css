@@ -438,9 +438,6 @@ hr {
 .form-group label {
   margin-bottom: 0.5em;
 }
-.form-group label {
-  color: var(--primary);
-}
 .form-group input {
   height: 40px;
   border-radius: 4px;

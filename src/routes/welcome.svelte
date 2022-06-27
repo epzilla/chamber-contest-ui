@@ -23,11 +23,15 @@
   import { members } from '../modules/stores';
 
   export let memberList: Member[];
+  let selectedMember: Member | null = null;
+
   members.subscribe(m => {
     memberList = m;
+    selectedMember = selectedMember
+      ? memberList.find(m => m.id === selectedMember.id)
+      : null;
   });
 
-  let selectedMember: Member | null = memberList[0];
   function onSelectChange(e) {
     selectedMember = memberList.find(m => m.id.toString() === e.target.value);
   }
@@ -44,12 +48,15 @@
 <p>Select your name from our list of ambassadors below to get started:</p>
 
 <select name="member-select" class="member-select" on:change={onSelectChange}>
+  <option value=""> -- Select your name -- </option>
   {#each memberList as member}
     <option value={member.id}>{member.name}</option>
   {/each}
 </select>
 
-<button class="primary" on:click={onSubmit}>Lets' Go!</button>
+<button class="primary" on:click={onSubmit} disabled={!selectedMember}
+  >Lets' Go!</button
+>
 
 <style lang="scss">
   .member-select {

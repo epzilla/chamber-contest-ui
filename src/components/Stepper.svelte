@@ -61,7 +61,7 @@
 
     button {
       width: 30px;
-      background-color: #00a1cd;
+      background-color: var(--secondaryBtnBg);
       color: white;
       font-size: 16pt;
 

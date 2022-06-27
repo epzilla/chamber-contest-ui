@@ -8,6 +8,14 @@
   export let isCurrent: boolean;
 
   let expandedRows: { [id: number]: boolean } = {};
+  let initted = false;
+
+  user.subscribe(u => {
+    if (u && !initted && Object.keys(expandedRows).length === 0) {
+      initted = true;
+      expandedRows[u.id] = true;
+    }
+  });
 
   function toggleRow(memberId: number) {
     if (expandedRows[memberId]) {

@@ -1227,6 +1227,13 @@
   dependencies:
     "has-flag" "^4.0.0"
 
+"svelecte@^3.8.0":
+  "integrity" "sha512-LoilwIfrpGoNnm597VDxz/XmhdYEu5dof4cBmrJHABp36RaZjI+zFnDwauPTyw9I19SfjEkZHVL8/1vex/6XZw=="
+  "resolved" "https://registry.npmjs.org/svelecte/-/svelecte-3.8.0.tgz"
+  "version" "3.8.0"
+  dependencies:
+    "svelte-tiny-virtual-list" "^2.0.0"
+
 "svelte-check@^2.0.0":
   "integrity" "sha512-EstDoqxjqWStWELh7Z0qytqUDl/ikdNEr21dveNc4fUDnhnqO2F2jHEufqoNnC3GfBji3GIUHvoXsp/I5lMbCg=="
   "resolved" "https://registry.npmjs.org/svelte-check/-/svelte-check-2.2.5.tgz"
@@ -1269,6 +1276,11 @@
   "integrity" "sha512-iLE9dPT/2ITtwC4z4YfuOuKGuHxJKQ1Ezmt7IpsZhYdxGMDJlS2qqRjWzMPHlgpAH4ANp+TxzxIMNJ5TkFdPSA=="
   "resolved" "https://registry.npmjs.org/svelte-select/-/svelte-select-4.4.0.tgz"
   "version" "4.4.0"
+
+"svelte-tiny-virtual-list@^2.0.0":
+  "integrity" "sha512-xg9ckb8UeeIme4/5qlwCrl2QNmUZ8SCQYZn3Ji83cUsoASqRNy3KWjpmNmzYvPDqCHSZjruBBsoB7t5hwuzw5g=="
+  "resolved" "https://registry.npmjs.org/svelte-tiny-virtual-list/-/svelte-tiny-virtual-list-2.0.5.tgz"
+  "version" "2.0.5"
 
 "svelte@^3.2.0", "svelte@^3.23.0", "svelte@^3.24.0", "svelte@^3.34.0", "svelte@^3.38.3", "svelte@^3.40.1", "svelte@>=3.19.0":
   "integrity" "sha512-XtExLd2JAU3T7M2g/DkO3UNj/3n1WdTXrfL63OZ5nZq7nAqd9wQw+lR4Pv/wkVbrWbAIPfLDX47UjFdmnY+YtQ=="

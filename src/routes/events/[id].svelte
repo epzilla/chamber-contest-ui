@@ -88,7 +88,8 @@
         memberId: selectedAttendee,
         eventId: event.id,
         guests: guestCount,
-        guestNames: guestNames?.map(e => e.value) || []
+        guestNames: guestNames?.map(e => e.value) || [],
+        org: ''
       });
       showAttendanceForm = false;
       const m = memberList.find(m => m.id === selectedAttendee);
