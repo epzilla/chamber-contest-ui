@@ -9,13 +9,30 @@
   {#each options as option}
     <button
       id={`${id}-${option.key}`}
+      class="radio-btn"
       class:secondary={value === option.key}
       on:click={() => onSelect(option)}
     >
-      {#if value === option.key}
-        <span class="fa fa-check" />
-      {/if}
+      <span
+        class="fa"
+        class:fa-check-circle={value === option.key}
+        class:fa-circle-o={value !== option.key}
+      />
       <span>{option.value}</span></button
     >
   {/each}
 {/if}
+
+<style lang="scss">
+  .radio-btn {
+    display: grid;
+    margin-right: 10px;
+    padding: 0 1rem;
+    text-align: left;
+    grid-template-columns: 20px 1fr;
+    gap: 8px;
+    align-items: center;
+    width: 100%;
+    max-width: 250px;
+  }
+</style>

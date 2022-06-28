@@ -9,16 +9,18 @@ type myEventsRsp = {
   attendedNonAdHoc: ChamberEvent[];
 };
 
+function sortEventsByTime(a: ChamberEvent, b: ChamberEvent) {
+  const aTime = new Date(a.startTime);
+  const bTime = new Date(b.startTime);
+  return bTime.getTime() - aTime.getTime();
+}
+
 export const pastEvents = writable<ChamberEvent[]>([]);
 export const myEvents = writable<ChamberEvent[]>([]);
 export const myUnattendedEvents = writable<ChamberEvent[]>([]);
 
 rest.get('past-events').then((events: ChamberEvent[]) => {
-  events.sort((a, b) => {
-    const aTime = new Date(a.startTime);
-    const bTime = new Date(b.startTime);
-    return bTime.getTime() - aTime.getTime();
-  });
+  events.sort(sortEventsByTime);
   pastEvents.set(events);
 });
 
@@ -27,17 +29,9 @@ user.subscribe(u => {
     rest
       .get(`events-by-member/${u.id}`)
       .then(({ attended, unattended }: myEventsRsp) => {
-        attended.sort((a, b) => {
-          const aTime = new Date(a.startTime);
-          const bTime = new Date(b.startTime);
-          return bTime.getTime() - aTime.getTime();
-        });
+        attended.sort(sortEventsByTime);
+        unattended.sort(sortEventsByTime);
         myEvents.set(attended);
-        unattended.sort((a, b) => {
-          const aTime = new Date(a.startTime);
-          const bTime = new Date(b.startTime);
-          return bTime.getTime() - aTime.getTime();
-        });
         myUnattendedEvents.set(unattended);
       });
   }

@@ -173,15 +173,51 @@
           </div>
         {:else if chosenActivity === ActivityTypes.CALL_EMAIL}
           <div class="call-email-form">
-            <h4>Who did you call/email?</h4>
-            <input type="text" placeholder="Name" />
-            <input type="text" placeholder="Email" />
+            <div class="form-group">
+              <label class="with-sublabel">Who did you call/email?</label>
+              <small
+                >Enter a name, and then either a phone number, email, or both if
+                you prefer!</small
+              >
+              <div class="form-group-inline">
+                <label for="name-input">Name:</label>
+                <input
+                  type="text"
+                  placeholder="Name"
+                  id="name-input"
+                  name="name-input"
+                />
+              </div>
+              <div class="form-group-inline">
+                <label for="phone-input">Phone:</label>
+                <input
+                  type="tel"
+                  placeholder="e.g. (256) 555-5555"
+                  id="phone-input"
+                  name="phone-input"
+                />
+              </div>
+              <div class="form-group-inline">
+                <label for="email-input">Email:</label>
+                <input
+                  type="email"
+                  placeholder="e.g. chamberperson@madison.rocks"
+                  id="email-input"
+                  name="email-input"
+                />
+              </div>
+            </div>
           </div>
         {:else if chosenActivity === ActivityTypes.DELIVERY}
           <div class="delivery-form">
-            <h4>What did you deliver?</h4>
-            <input type="text" placeholder="Item" />
-            <input type="text" placeholder="Location" />
+            <div class="form-group">
+              <label>Where to?</label>
+              <input type="text" placeholder="Organization/Company" />
+            </div>
+            <div class="form-group">
+              <label>Desribe what you delivered:</label>
+              <input type="text" placeholder="Describe your delivery" />
+            </div>
           </div>
         {/if}
       </div>
@@ -214,6 +250,23 @@
       height: 100%;
       width: 100%;
     }
+  }
+
+  .form-group {
+    label.with-sublabel {
+      margin-bottom: 3px;
+      + small {
+        font-size: 10pt;
+        font-style: italic;
+        margin-bottom: 0.5rem;
+      }
+    }
+  }
+
+  .form-group-inline {
+    display: grid;
+    grid-template-columns: 60px auto;
+    align-items: center;
   }
 
   @media screen and (max-width: 700px) {

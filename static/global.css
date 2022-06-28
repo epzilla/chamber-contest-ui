@@ -209,6 +209,7 @@ textarea,
 select,
 button {
   font-family: var(--mainFont);
+  font-size: 1rem;
 }
 
 input[type='submit'] {

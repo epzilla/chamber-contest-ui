@@ -104,7 +104,22 @@ export function calculateTotalsForTimePeriod(json: TimePeriodTotalRsp) {
       }
     }
   });
-  return totals.concat(emptyTotals).sort((a, b) => a.rank - b.rank);
+  return totals.concat(emptyTotals).sort((a, b) => {
+    const rankDiff = a.rank - b.rank;
+    if (rankDiff !== 0) {
+      return rankDiff;
+    }
+    const eventsDiff = a.events.length - b.events.length;
+    if (eventsDiff !== 0) {
+      return eventsDiff;
+    }
+    const guestsDiff = a.guests - b.guests;
+    if (guestsDiff !== 0) {
+      return guestsDiff;
+    }
+    const nameDiff = a.name.localeCompare(b.name);
+    return nameDiff;
+  });
 }
 
 export function getMonth(month: number) {
