@@ -24,6 +24,22 @@
       expandedRows[memberId] = true;
     }
   }
+
+  function getEmptyEventsString(memberId: number, name: string) {
+    if ($user?.id === memberId) {
+      if (isCurrent) {
+        return `You have not logged any chamber activities for ${timePeriod} yet.`;
+      } else {
+        return `You did not log any chamber activities for ${timePeriod}.`;
+      }
+    } else {
+      if (isCurrent) {
+        return `${name} has not logged any chamber activities for ${timePeriod} yet.`;
+      } else {
+        return `${name} did not log any chamber activities for ${timePeriod}.`;
+      }
+    }
+  }
 </script>
 
 <div class="results-table">
@@ -85,11 +101,7 @@
               </div>
             </div>
           {:else}
-            <em
-              >{getFirstName(name)}
-              {isCurrent ? 'has not yet logged' : 'did not log'} any chamber activities
-              for {timePeriod}.</em
-            >
+            <em>{getEmptyEventsString(memberId, name)}</em>
           {/if}
         </div>
       </div>

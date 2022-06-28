@@ -171,3 +171,17 @@ export function toDatetimeLocal(dateString: string) {
   const SS = ten(date.getSeconds());
   return YYYY + '-' + MM + '-' + DD + 'T' + HH + ':' + II + ':' + SS;
 }
+
+export function validateEvent(ev: Partial<ChamberEvent>) {
+  const { startTime, title, eventType } = ev;
+  if (!startTime) {
+    return Promise.reject('Event must have a start time');
+  }
+  if (!title) {
+    return Promise.reject('Event must have a title');
+  }
+  if (!eventType?.length) {
+    return Promise.reject('Event must have a type');
+  }
+  return Promise.resolve();
+}

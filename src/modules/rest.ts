@@ -21,7 +21,7 @@ const post = async (url, body) => {
     },
     body: JSON.stringify(body)
   });
-  return res.status;
+  return res.json();
 };
 
 const put = async (url, data) => {
@@ -39,4 +39,15 @@ const put = async (url, data) => {
   return json;
 };
 
-export default { get, post, put };
+const del = async url => {
+  const res = await fetch(`${BASE_URL}${url}`, {
+    method: 'DELETE',
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  });
+
+  return res.status;
+};
+
+export default { get, post, put, del };

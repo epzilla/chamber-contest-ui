@@ -28,7 +28,7 @@
   import SuccessAnimation from '../../components/SuccessAnimation.svelte';
   import Switch from '../../components/Switch.svelte';
   import AdminEventForm from '../../components/AdminEventForm.svelte';
-  import { toDatetimeLocal } from '../../modules/helpers';
+  import { toDatetimeLocal, validateEvent } from '../../modules/helpers';
 
   export let events: ChamberEvent[];
   let isEditingEvent: ChamberEvent | null = null;
@@ -37,13 +37,34 @@
   let didSave = false;
   let addToCal = true;
 
-  function onSubmit() {
-    isSubmitting = true;
+  async function addEvent() {
     console.log({ isEditingEvent, isAddingEvent });
-    setTimeout(() => {
-      isSubmitting = false;
+    try {
+      await validateEvent(isAddingEvent);
       didSave = true;
-    }, 3000);
+    } catch (err) {
+      console.error(err);
+      return;
+    } finally {
+      isSubmitting = false;
+    }
+  }
+
+  function onAddSuccess(newEvent: ChamberEvent) {
+    let allEvents = [...events, newEvent];
+    allEvents.sort(sortEventsByTime);
+    events = allEvents;
+    isAddingEvent = null;
+  }
+
+  function onDeleteSuccess() {
+    let allEvents = [...events];
+    let i = allEvents.findIndex(e => e.id === isEditingEvent.id);
+    if (i !== -1) {
+      allEvents.splice(i, 1);
+      isEditingEvent = null;
+      events = allEvents;
+    }
   }
 
   function onBeginAdd() {
@@ -103,6 +124,8 @@
         editingEvent={isEditingEvent}
         editMode
         onCancel={() => (isEditingEvent = null)}
+        onSuccess={() => (isEditingEvent = null)}
+        {onDeleteSuccess}
       />
     </div>
   </PopModal>
@@ -112,6 +135,7 @@
       <AdminEventForm
         editingEvent={isAddingEvent}
         onCancel={() => (isAddingEvent = null)}
+        onSuccess={onAddSuccess}
       />
     </div>
   </PopModal>

@@ -504,6 +504,13 @@ button.success {
   color: #fff;
   text-decoration: none;
 }
+button.danger {
+  background-color: #de4558;
+  border-color: #941616;
+  color: #fff;
+  font-weight: 700;
+  text-decoration: none;
+}
 button.big {
   height: 55px;
   font-size: 1.25rem;

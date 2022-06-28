@@ -20,13 +20,14 @@ type Member = {
 type ChamberEvent = {
   id: number;
   eventType: EventType[];
-  dateEntered: string;
+  dateEntered?: string;
   startTime: string;
-  endTime: string;
+  endTime?: string;
   title: string;
   address?: string;
   notes?: string;
   isAdHoc?: boolean;
+  addToCal?: boolean;
 };
 
 type EventAttendance = {
