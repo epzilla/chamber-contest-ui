@@ -23,7 +23,7 @@
 
 <script lang="ts">
   import rest from '../../modules/rest';
-  import Toggle from '../../components/Toggle.svelte';
+  import Switch from '../../components/Switch.svelte';
   import { onDestroy, onMount } from 'svelte';
 
   export let memberList: Member[];
@@ -96,6 +96,15 @@
           member.name = data[rowIndex][1] as string;
           await rest.put(`members/edit-member`, member);
         }
+      } else {
+        const newMember = {
+          id: parseInt(data[rowIndex][0] as string),
+          name: data[rowIndex][1] as string,
+          admin: !!data[rowIndex][2],
+          active: !!data[rowIndex][3]
+        };
+        await rest.post(`members`, newMember);
+        memberList = memberList.concat(newMember);
       }
     } catch (err) {
       console.log(err);
@@ -140,7 +149,7 @@
     ])
   ];
 
-  let newRow = [getNextId(), 'Enter Name', false];
+  let newRow = [getNextId(), 'Enter Name', false, true];
 </script>
 
 <h2>Edit Members</h2>
@@ -169,18 +178,16 @@
           {row[1]}
         </div>
         <div class="table-cell">
-          <Toggle
-            id={`admin-${row[0]}`}
-            value={!!row[2]}
+          <Switch
+            checked={!!row[2]}
             onChange={val => {
               toggleAdmin(i);
             }}
           />
         </div>
         <div class="table-cell">
-          <Toggle
-            id={`active-${row[0]}`}
-            value={!!row[3]}
+          <Switch
+            checked={!!row[3]}
             onChange={val => {
               toggleActive(i);
             }}
@@ -197,32 +204,10 @@
 </button>
 
 <style lang="scss">
+  @import './styles';
   .table-header,
   .table-row {
-    display: grid;
     grid-template-columns: 50px 1fr 70px 60px;
-  }
-
-  .table-row {
-    align-items: center;
-
-    &.inactive {
-      color: #ccc;
-      font-style: italic;
-    }
-  }
-
-  .table-header,
-  .table-body {
-    width: 100%;
-    font-size: 1rem;
-  }
-
-  .table-header {
-    font-size: 1rem;
-    font-weight: 700;
-    // display: grid;
-    border-bottom: 1px solid;
   }
 
   .table-header-cell,

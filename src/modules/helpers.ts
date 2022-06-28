@@ -150,3 +150,24 @@ export function getMonth(month: number) {
       return 'December';
   }
 }
+
+export function sortEventsByTime(a: ChamberEvent, b: ChamberEvent) {
+  const aTime = new Date(a.startTime);
+  const bTime = new Date(b.startTime);
+  return bTime.getTime() - aTime.getTime();
+}
+
+const ten = function (i) {
+  return (i < 10 ? '0' : '') + i;
+};
+
+export function toDatetimeLocal(dateString: string) {
+  const date = new Date(dateString);
+  const YYYY = date.getFullYear();
+  const MM = ten(date.getMonth() + 1);
+  const DD = ten(date.getDate());
+  const HH = ten(date.getHours());
+  const II = ten(date.getMinutes());
+  const SS = ten(date.getSeconds());
+  return YYYY + '-' + MM + '-' + DD + 'T' + HH + ':' + II + ':' + SS;
+}

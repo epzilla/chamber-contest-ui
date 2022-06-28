@@ -1,6 +1,7 @@
 import { writable } from 'svelte/store';
 import rest from '../rest';
 import { user } from './users';
+import { sortEventsByTime } from '../helpers';
 
 type myEventsRsp = {
   attended: ChamberEvent[];
@@ -8,12 +9,6 @@ type myEventsRsp = {
   attendedAdHoc: ChamberEvent[];
   attendedNonAdHoc: ChamberEvent[];
 };
-
-function sortEventsByTime(a: ChamberEvent, b: ChamberEvent) {
-  const aTime = new Date(a.startTime);
-  const bTime = new Date(b.startTime);
-  return bTime.getTime() - aTime.getTime();
-}
 
 export const pastEvents = writable<ChamberEvent[]>([]);
 export const myEvents = writable<ChamberEvent[]>([]);

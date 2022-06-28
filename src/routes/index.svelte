@@ -1,7 +1,7 @@
 <script context="module">
   import { ActivityTypes, BASE_URL } from '../modules/constants';
 
-  export async function load({ fetch, context }) {
+  export async function load({ fetch }) {
     try {
       const eventResult = await fetch(`${BASE_URL}upcoming-events`);
       const events = await eventResult.json();
@@ -23,11 +23,10 @@
   import { generateGuid } from '../modules/helpers';
   import PopModal from '../components/PopModal.svelte';
   import EventBlock from '../components/EventBlock.svelte';
-  import AttendanceFormLayout from '../components/AttendanceFormLayout.svelte';
   import RadioButtons from '../components/RadioButtons.svelte';
   import EventSelector from '../components/EventSelector.svelte';
   import Stepper from '../components/Stepper.svelte';
-  import Toggle from '../components/Toggle.svelte';
+  import Switch from '../components/Switch.svelte';
   import rest from '../modules/rest';
   import { user } from '../modules/stores/users';
   import { myEvents, myUnattendedEvents } from '../modules/stores/events';
@@ -117,7 +116,7 @@
 >
 
 <PopModal show={showAddEventForm} onClose={onToggleEventForm}>
-  <AttendanceFormLayout>
+  <div class="pop-modal-form">
     <div class="main-outer">
       <div class="main-inner">
         <h3>Let's give you some credit!</h3>
@@ -148,11 +147,7 @@
               {#if guestCount}
                 <div class="form-group">
                   <label for="add-names">Add guests names? (optional)</label>
-                  <Toggle
-                    id="add-names"
-                    value={addNames}
-                    onChange={v => (addNames = v)}
-                  />
+                  <Switch bind:checked={addNames} />
                 </div>
 
                 {#if addNames}
@@ -228,59 +223,9 @@
         <button on:click={onToggleEventForm}>Cancel</button>
       </div>
     </div>
-  </AttendanceFormLayout>
+  </div>
 </PopModal>
 
 <style lang="scss">
-  .main-outer {
-    height: 100%;
-    display: grid;
-    grid-template-rows: auto 100px;
-  }
-  .bottom-row {
-    display: grid;
-    grid-template: 1fr 1fr / 100%;
-    gap: 1rem;
-    justify-content: center;
-    align-items: center;
-
-    button {
-      margin: 0;
-      max-width: unset;
-      height: 100%;
-      width: 100%;
-    }
-  }
-
-  .form-group {
-    label.with-sublabel {
-      margin-bottom: 3px;
-      + small {
-        font-size: 10pt;
-        font-style: italic;
-        margin-bottom: 0.5rem;
-      }
-    }
-  }
-
-  .form-group-inline {
-    display: grid;
-    grid-template-columns: 60px auto;
-    align-items: center;
-  }
-
-  @media screen and (max-width: 700px) {
-    .ad-hoc-event-btn {
-      position: fixed;
-      bottom: 1rem;
-      right: 1rem;
-      left: 1rem;
-      border: 1px solid #ccc;
-      padding: 10px;
-      border-radius: 5px;
-      font-size: 1.2em;
-      max-width: unset;
-      cursor: pointer;
-    }
-  }
+  @import '../styles/modal-form.scss';
 </style>

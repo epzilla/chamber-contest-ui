@@ -1,19 +1,14 @@
 <script lang="ts">
   export let altColor = '';
-  export let value: boolean;
-  export let onChange: (val: boolean) => void;
+  export let checked = false;
+  export let onChange: (val: boolean) => void = null;
   export let id = '';
   export let style = '';
 </script>
 
 <div class={`toggle ${altColor ? 'alt-color' : ''}`} {style}>
-  <input
-    {id}
-    type="checkbox"
-    checked={value}
-    on:change={e => onChange(!value)}
-  />
-  <label for={id}>toggle</label>
+  <input type="checkbox" bind:checked />
+  <label>toggle</label>
 </div>
 
 <style lang="scss">

@@ -2,8 +2,11 @@
   import RadioButtons from '../../components/RadioButtons.svelte';
   import PopModal from '../../components/PopModal.svelte';
   import Stepper from '../../components/Stepper.svelte';
+  import SucceessAnimation from '../../components/SuccessAnimation.svelte';
+  import Switch from '../../components/Switch.svelte';
   let value = 0;
   let show = false;
+  let blah = true;
 
   function onChange(n) {
     value = n;
@@ -28,4 +31,6 @@
   Dear sir or madam, how many guests did you invite?
 
   <RadioButtons id="test" {options} value={selected} {onSelect} />
+  <Switch bind:checked={blah} />
+  <SucceessAnimation />
 </PopModal>

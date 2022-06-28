@@ -26,12 +26,11 @@
 
 <script lang="ts">
   import { onDestroy } from 'svelte';
-  import AttendanceFormLayout from '../../components/AttendanceFormLayout.svelte';
   import AddToCalendarButton from '../../components/AddToCalendarButton.svelte';
   import DateTime from '../../components/DateTime.svelte';
   import PopModal from '../../components/PopModal.svelte';
   import Stepper from '../../components/Stepper.svelte';
-  import Toggle from '../../components/Toggle.svelte';
+  import Switch from '../../components/Switch.svelte';
   import { user } from '../../modules/stores';
   import { getFirstName } from '../../modules/helpers';
   import rest from '../../modules/rest';
@@ -55,7 +54,7 @@
   let futureEventInterval;
   let guestNames = [];
 
-  $: isFutureEvent = new Date(event.dateOfEvent) >= new Date();
+  $: isFutureEvent = new Date(event.startTime) >= new Date();
 
   $: userDidAttend = liveAttendeeList.find(a => a.id === $user?.id);
 
@@ -67,7 +66,7 @@
 
     if (isFutureEvent && !futureEventInterval) {
       futureEventInterval = setInterval(() => {
-        isFutureEvent = new Date(event.dateOfEvent) >= new Date();
+        isFutureEvent = new Date(event.startTime) >= new Date();
         if (!isFutureEvent) {
           clearInterval(futureEventInterval);
         }
@@ -118,18 +117,14 @@
       addNames = false;
     }
   }
-
-  function onAddNamesToggle(val) {
-    addNames = val;
-  }
 </script>
 
 {#if event}
   <div class="main player-profile">
     <h2 class="align-center primary-text">{event.title}</h2>
     <p>{event.address}</p>
-    {#if event.dateOfEvent}
-      <p><DateTime date={event.dateOfEvent} /></p>
+    {#if event.startTime}
+      <p><DateTime date={event.startTime} /></p>
     {/if}
     {#if event.notes}
       <p>{event.notes}</p>
@@ -153,7 +148,7 @@
         >{userDidAttend ? 'Edit Attendance' : 'Mark Attended'}</button
       >
       <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
-        <AttendanceFormLayout>
+        <div class="pop-modal-form">
           <h3>
             {getFirstName($user?.name)}, claim your contest points for attending {event.title}!
           </h3>
@@ -164,11 +159,7 @@
           {#if guestCount > 0}
             <div class="form-group">
               <label for="add-names">Add Guest Names? (optional)</label>
-              <Toggle
-                id="add-names"
-                value={addNames}
-                onChange={onAddNamesToggle}
-              />
+              <Switch bind:checked={addNames} />
             </div>
             {#if addNames}
               <div class="form-group">
@@ -196,7 +187,7 @@
             on:click={onAttendanceFormToggle}
             disabled={submitting || !selectedAttendee}>Cancel</button
           >
-        </AttendanceFormLayout>
+        </div>
       </PopModal>
     {:else}
       <h4>
@@ -208,6 +199,8 @@
 {/if}
 
 <style lang="scss">
+  @import '../../styles/modal-form.scss';
+
   .member-select {
     min-width: 250px;
     height: 40px;

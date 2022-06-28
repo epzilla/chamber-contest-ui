@@ -19,9 +19,7 @@ type Member = {
 
 type ChamberEvent = {
   id: number;
-  guests: number;
   eventType: EventType[];
-  dateOfEvent: string;
   dateEntered: string;
   startTime: string;
   endTime: string;
