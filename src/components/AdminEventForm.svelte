@@ -1,7 +1,6 @@
 <script lang="ts">
   import { isBefore } from 'date-fns';
   import { onMount } from 'svelte';
-  import { eventTypes } from '../modules/stores/eventTypes';
   import { toDatetimeLocal, validateEvent } from '../modules/helpers';
   import rest from '../modules/rest';
   import { user } from '../modules/stores';
@@ -145,6 +144,7 @@
         type="datetime-local"
         name="startTime"
         id="startTime"
+        step="60"
         bind:value={localStartTime}
       />
     </div>
@@ -154,6 +154,7 @@
         type="datetime-local"
         name="endTime"
         id="endTime"
+        step="60"
         bind:value={localEndTime}
       />
     </div>
