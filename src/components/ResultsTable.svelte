@@ -1,7 +1,6 @@
 <script lang="ts">
   import { format } from 'date-fns';
   import { user } from '../modules/stores';
-  import { getFirstName } from '../modules/helpers';
 
   export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
