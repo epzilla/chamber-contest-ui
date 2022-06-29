@@ -6,7 +6,7 @@ Chamber of Commerce Event Contest tracker using SvelteKit, deployed to [Vercel](
 
 - [ ] Admin UI
   - [x] Add new events
-    - [ ] Add to calendar
+    - [x] Add to calendar
   - [x] Add new members
   - [ ] Edit event types, point values, modifiers (+1 for guests, etc.)
 - [ ] Ad-hoc events UI

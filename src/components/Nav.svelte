@@ -14,6 +14,16 @@
   function toggleMenu() {
     menu = !menu;
   }
+
+  function isActive(href) {
+    if (
+      (view.includes('edit-event') || view.includes('edit-members')) &&
+      href.includes('/admin')
+    ) {
+      return true;
+    }
+    return view === href;
+  }
 </script>
 
 <header class="header">
@@ -28,7 +38,7 @@
           <a
             {href}
             {title}
-            class:active={view === href}
+            class:active={isActive(href)}
             on:click={() => (menu = false)}>{title}</a
           >
         {/if}
