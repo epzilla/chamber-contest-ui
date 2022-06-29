@@ -5,7 +5,7 @@
     pastEvents
   } from '../modules/stores/events';
   import Svelecte from 'svelecte';
-  import format from 'date-fns/format';
+  import { format } from 'date-fns';
   export let selected = null;
   export let useAttended = false;
   export let useUnattended = false;

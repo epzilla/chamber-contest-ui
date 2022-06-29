@@ -1,6 +1,6 @@
 <script context="module">
   import { BASE_URL } from '../../../modules/constants';
-  import format from 'date-fns/format';
+  import { format } from 'date-fns';
   import { calculateTotalsForTimePeriod } from '../../../modules/helpers';
 
   export async function load({ fetch, page }) {

@@ -95,6 +95,8 @@
       liveAttendeeList = [...liveAttendeeList, m];
       selectedAttendee = null;
       listInitted = false;
+    } catch (e) {
+      debugger;
     } finally {
       submitting = false;
     }

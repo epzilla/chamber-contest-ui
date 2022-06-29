@@ -13,6 +13,7 @@ type EventType = {
 type Member = {
   id: number;
   name: string;
+  email?: string;
   isAdmin?: boolean;
   isActive?: boolean;
 };

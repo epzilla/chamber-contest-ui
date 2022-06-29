@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { BASE_URL } from './constants';
+import { API_URL } from './constants';
 import LocalStorage from './localStorage';
 
 const get = async url => {
-  const res = await fetch(`${BASE_URL}${url}`, {
+  const res = await fetch(`${API_URL}${url}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json'
@@ -14,7 +14,7 @@ const get = async url => {
 };
 
 const post = async (url, body) => {
-  const res = await fetch(`${BASE_URL}${url}`, {
+  const res = await fetch(`${API_URL}${url}`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -28,7 +28,7 @@ const put = async (url, data) => {
   if (data && !data.deviceId) {
     data.deviceId = LocalStorage.get('device-id');
   }
-  const res = await fetch(`${BASE_URL}${url}`, {
+  const res = await fetch(`${API_URL}${url}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -40,7 +40,7 @@ const put = async (url, data) => {
 };
 
 const del = async url => {
-  const res = await fetch(`${BASE_URL}${url}`, {
+  const res = await fetch(`${API_URL}${url}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'

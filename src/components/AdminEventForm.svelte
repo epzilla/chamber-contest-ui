@@ -1,9 +1,10 @@
 <script lang="ts">
-  import isBefore from 'date-fns/isBefore';
+  import { isBefore } from 'date-fns';
   import { onMount } from 'svelte';
   import { eventTypes } from '../modules/stores/eventTypes';
   import { toDatetimeLocal, validateEvent } from '../modules/helpers';
   import rest from '../modules/rest';
+  import { user } from '../modules/stores';
   import EventTypeSelector from './EventTypeSelector.svelte';
   import Switch from './Switch.svelte';
 
@@ -36,6 +37,10 @@
 
   async function performSave(ev) {
     let newEv: ChamberEvent;
+    if (addToCal) {
+      ev.email = $user.email;
+    }
+
     if (editMode) {
       newEv = await rest.put(`events/${ev.id}`, ev);
     } else {

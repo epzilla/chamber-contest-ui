@@ -22,39 +22,31 @@
 </script>
 
 <script lang="ts">
-  import Loader from '../../components/Loader.svelte';
   import DateTime from '../../components/DateTime.svelte';
   import PopModal from '../../components/PopModal.svelte';
-  import SuccessAnimation from '../../components/SuccessAnimation.svelte';
-  import Switch from '../../components/Switch.svelte';
   import AdminEventForm from '../../components/AdminEventForm.svelte';
-  import { toDatetimeLocal, validateEvent } from '../../modules/helpers';
 
   export let events: ChamberEvent[];
   let isEditingEvent: ChamberEvent | null = null;
   let isAddingEvent: Partial<ChamberEvent> | null = null;
-  let isSubmitting = false;
-  let didSave = false;
-  let addToCal = true;
-
-  async function addEvent() {
-    console.log({ isEditingEvent, isAddingEvent });
-    try {
-      await validateEvent(isAddingEvent);
-      didSave = true;
-    } catch (err) {
-      console.error(err);
-      return;
-    } finally {
-      isSubmitting = false;
-    }
-  }
 
   function onAddSuccess(newEvent: ChamberEvent) {
     let allEvents = [...events, newEvent];
     allEvents.sort(sortEventsByTime);
     events = allEvents;
     isAddingEvent = null;
+  }
+
+  function onEditSuccess(newEvent: ChamberEvent) {
+    let allEvents = events.map(ev => {
+      if (ev.id === newEvent.id) {
+        return newEvent;
+      }
+      return ev;
+    });
+    allEvents.sort(sortEventsByTime);
+    events = allEvents;
+    isEditingEvent = null;
   }
 
   function onDeleteSuccess() {
@@ -124,7 +116,7 @@
         editingEvent={isEditingEvent}
         editMode
         onCancel={() => (isEditingEvent = null)}
-        onSuccess={() => (isEditingEvent = null)}
+        onSuccess={onEditSuccess}
         {onDeleteSuccess}
       />
     </div>
