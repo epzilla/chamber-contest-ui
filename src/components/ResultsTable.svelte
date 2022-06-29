@@ -1,5 +1,5 @@
 <script lang="ts">
-  import format from 'date-fns/format';
+  import { format } from 'date-fns';
   import { user } from '../modules/stores';
   import { getFirstName } from '../modules/helpers';
 
