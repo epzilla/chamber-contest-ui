@@ -26,10 +26,12 @@
   export let typeList: EventType[];
 
   let keyListener;
+  let hasChanges = false;
+  let isAdding = false;
   let editableCells = [];
-  let columns = ['ID', 'Type', 'Points', 'Delete'];
-  let data = [...typeList.map(type => [type.id, type.type, type.points, ''])];
-  let newRow = [getNextId(), 'Enter Type', 1, ''];
+  let data: [number, string, number][];
+  let initialData: typeof data;
+  let newRow = [getNextId(), 'Enter Type', 1];
 
   function getNextId() {
     const ids = typeList.map(t => t.id);
@@ -47,17 +49,79 @@
   }
 
   function addRow() {
-    data = [...data, [...newRow]];
-    newRow = columns;
+    isAdding = true;
+    data = [...data, [...newRow]] as typeof data;
+    newRow = [getNextId(), 'Enter Type', 1];
     setTimeout(() => {
       selectAllTextInCell(editableCells[editableCells.length - 1]);
     }, 0);
   }
 
-  function deleteRow(row) {
+  async function deleteRow(row) {
     if (confirm(`Are you sure you want to delete ${row[1]}?`)) {
-      data = data.filter(r => row != r);
+      await rest.del(`event-types/${row[0]}`);
+      typeList = typeList.filter(t => t.id !== row[0]);
+      resetDataAfterSave();
     }
+  }
+
+  function mergeUpdatesIntoTypeList(updated: EventType[]) {
+    typeList = [
+      ...typeList.map(t => {
+        const updatedType = updated.find(m => m.id == t.id);
+        if (updatedType) {
+          return updatedType;
+        }
+        return t;
+      })
+    ] as typeof typeList;
+  }
+
+  function isValidEntry(entry: typeof data[0]) {
+    return entry[1] != '' && entry[2] != null;
+  }
+
+  async function save() {
+    let newType: EventType;
+    if (isAdding) {
+      const addedData = data[data.length - 1];
+      if (isValidEntry(addedData)) {
+        newType = {
+          id: addedData[0],
+          type: addedData[1],
+          points: addedData[2]
+        };
+        typeList = typeList.concat(newType);
+      } else {
+        // Do some error handling
+        return;
+      }
+    }
+
+    let changeList: EventType[] = [];
+    data.forEach((row, i) => {
+      if (isValidEntry(row)) {
+        const updatedType = typeList.find(m => m.id == row[0]);
+        if (updatedType) {
+          if (updatedType.type != row[1] || updatedType.points != row[2]) {
+            changeList.push({
+              ...updatedType,
+              type: row[1],
+              points: row[2]
+            });
+          }
+        }
+      }
+    });
+
+    await rest.put('event-types', { updated: changeList, added: newType });
+    mergeUpdatesIntoTypeList(changeList);
+    resetDataAfterSave();
+  }
+
+  function cancel() {
+    data = initialData;
+    isAdding = false;
   }
 
   async function saveType(rowIndex: number) {
@@ -70,9 +134,9 @@
         }
       } else {
         const newType = {
-          id: parseInt(data[rowIndex][0] as string),
+          id: parseInt(data[rowIndex][0] as unknown as string),
           type: data[rowIndex][1] as string,
-          points: parseInt(data[rowIndex][2] as string)
+          points: parseInt(data[rowIndex][2] as unknown as string)
         };
         await rest.post(`event-types`, newType);
         typeList = typeList.concat(newType);
@@ -82,38 +146,48 @@
     }
   }
 
-  onMount(() => {
-    if (typeof document !== 'undefined') {
-      keyListener = document.addEventListener('keydown', e => {
-        if (e.key == 'Enter') {
-          const target = e.target as HTMLElement;
-          if (target.classList.contains('new-row')) {
-            addRow();
-          } else if (target.classList.contains('existing-name')) {
-            e.preventDefault();
-            const rowIndex = parseInt(target.dataset.row);
-            saveType(rowIndex);
-            if (editableCells.length > rowIndex + 1) {
-              selectAllTextInCell(editableCells[rowIndex + 1]);
-            }
+  function resetDataAfterSave() {
+    data = [
+      ...typeList.map(type => [type.id, type.type, type.points])
+    ] as typeof data;
+    initialData = [...data.map(d => [...d])] as typeof data;
+    hasChanges = false;
+    isAdding = false;
+  }
+
+  function isDirty(oldData: typeof data, newData: typeof data) {
+    for (let i = 0; i < oldData.length; i++) {
+      for (let j = 0; j < oldData[i].length; j++) {
+        if (oldData[i][j] != newData[i][j]) {
+          if (
+            (typeof newData[i][j] === 'string' &&
+              oldData[i][j] == null &&
+              newData[i][j] == '') ||
+            (typeof oldData[i][j] === 'string' &&
+              newData[i][j] == null &&
+              oldData[i][j] == '')
+          ) {
+            continue;
+          } else {
+            return true;
           }
         }
-      });
+      }
     }
-  });
+    return false;
+  }
 
-  onDestroy(() => {
-    if (typeof document !== 'undefined') {
-      document.removeEventListener('keydown', keyListener);
-    }
-  });
+  resetDataAfterSave();
+
+  $: {
+    hasChanges = isDirty(initialData, data);
+  }
 </script>
 
 <h2>Edit Event Types</h2>
 
 <div class="editable-table">
   <div class="table-header">
-    <div class="table-header-cell">ID</div>
     <div class="table-header-cell">Type</div>
     <div class="table-header-cell">Points</div>
     <div class="table-header-cell">Delete</div>
@@ -121,18 +195,8 @@
   <div class="table-body">
     {#each data as row, i}
       <div class="table-row">
-        <div class="table-cell">
-          {row[0]}
-        </div>
-        <div
-          class="table-cell existing-name"
-          data-row={i}
-          contenteditable="true"
-          bind:this={editableCells[i]}
-          bind:innerHTML={row[1]}
-          on:blur={() => saveType(i)}
-        >
-          {row[1]}
+        <div class="table-cell existing-name">
+          <input type="text" bind:value={row[1]} />
         </div>
         <div class="table-cell">
           <input type="number" step="1" min="0" bind:value={row[2]} />
@@ -145,24 +209,33 @@
       </div>
     {/each}
   </div>
+  <div class="button-row">
+    <button on:click={addRow} class="primary" disabled={isAdding}>
+      <span class="fa fa-plus" />
+      <span>Add Type</span>
+    </button>
+    <div>
+      <button on:click={save} class="secondary">
+        <span>Save</span>
+      </button>
+      <button on:click={cancel} disabled={!hasChanges}>
+        <span>Cancel</span>
+      </button>
+    </div>
+  </div>
 </div>
-
-<button on:click={addRow}>
-  <span class="fa fa-plus" />
-  <span>Add Type</span>
-</button>
 
 <style lang="scss">
   @import './styles';
 
   .editable-table {
     width: 80%;
-    max-width: 400px;
+    max-width: 500px;
   }
 
   .table-header,
   .table-row {
-    grid-template-columns: 40px 3fr 1fr 40px;
+    grid-template-columns: 3fr 50px 50px;
     gap: 10px;
   }
 
@@ -189,6 +262,10 @@
     width: 45px;
   }
 
+  input[type='text'] {
+    width: 100%;
+  }
+
   .del-btn {
     padding: 0;
     display: flex;
@@ -199,6 +276,19 @@
 
     .fa {
       margin: 0;
+    }
+  }
+
+  .button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 8px;
+    padding-top: 15px;
+    border-top: 1px solid var(--colorDefaultText);
+    width: 100%;
+
+    button {
+      width: 135px;
     }
   }
 </style>

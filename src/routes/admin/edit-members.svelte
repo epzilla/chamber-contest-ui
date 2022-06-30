@@ -62,11 +62,8 @@
   }
 
   function cancelChanges() {
-    if (isAdding) {
-      data.pop();
-      isAdding = false;
-      newRow = [getNextId(), 'Enter Name', '', false, true];
-    }
+    isAdding = false;
+    newRow = [getNextId(), 'Enter Name', '', false, true];
     data = [...initialData.map(d => [...d])] as typeof data;
   }
 
@@ -136,7 +133,6 @@
       }
     });
 
-    console.log(changeList);
     await rest.put('members', { updated: changeList, added: newMember });
     mergeUpdatesIntoMemberList(changeList);
     resetDataAfterSave();
@@ -159,9 +155,6 @@
             isAdding = false;
           }
         }
-        if (target?.closest('input')) {
-          hasChanges = !isEqual(data, initialData);
-        }
       });
     }
   });
@@ -175,9 +168,6 @@
   function isDirty(oldData: typeof data, newData: typeof data) {
     for (let i = 0; i < oldData.length; i++) {
       for (let j = 0; j < oldData[i].length; j++) {
-        // if (i === 6 && j === 2) {
-        //   debugger;
-        // }
         if (oldData[i][j] != newData[i][j]) {
           if (
             (typeof newData[i][j] === 'string' &&
@@ -343,12 +333,6 @@
 
   input[type='email'] {
     width: 100%;
-    // border-color: transparent;
-    // background-color: transparent;
-
-    // &:focus {
-    //   border-color: initial;
-    // }
   }
 
   .button-row {
