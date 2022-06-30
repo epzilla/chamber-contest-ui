@@ -15,9 +15,9 @@
     menu = !menu;
   }
 
-  function isActive(href) {
+  function isActive(href, v) {
     if (
-      (view.includes('edit-event') || view.includes('edit-members')) &&
+      (v.includes('edit-event') || v.includes('edit-members')) &&
       href.includes('/admin')
     ) {
       return true;
@@ -38,7 +38,7 @@
           <a
             {href}
             {title}
-            class:active={isActive(href)}
+            class:active={isActive(href, view)}
             on:click={() => (menu = false)}>{title}</a
           >
         {/if}

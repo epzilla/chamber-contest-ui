@@ -21,11 +21,15 @@
 
 <script lang="ts">
   import { onDestroy, onMount } from 'svelte';
+  import rest from '../../modules/rest';
 
   export let typeList: EventType[];
 
   let keyListener;
   let editableCells = [];
+  let columns = ['ID', 'Type', 'Points', 'Delete'];
+  let data = [...typeList.map(type => [type.id, type.type, type.points, ''])];
+  let newRow = [getNextId(), 'Enter Type', 1, ''];
 
   function getNextId() {
     const ids = typeList.map(t => t.id);
@@ -50,32 +54,32 @@
     }, 0);
   }
 
-  function deleteRow(rowToBeDeleted) {
-    data = data.filter(row => row != rowToBeDeleted);
+  function deleteRow(row) {
+    if (confirm(`Are you sure you want to delete ${row[1]}?`)) {
+      data = data.filter(r => row != r);
+    }
   }
 
   async function saveType(rowIndex: number) {
-    //   try {
-    //     const member = memberList.find(m => m.id == data[rowIndex][0]);
-    //     if (member) {
-    //       if (member.name != data[rowIndex][1]) {
-    //         member.name = data[rowIndex][1] as string;
-    //         await rest.put(`members/edit-member`, member);
-    //       }
-    //     } else {
-    //       const newMember = {
-    //         id: parseInt(data[rowIndex][0] as string),
-    //         name: data[rowIndex][1] as string,
-    //         admin: !!data[rowIndex][2],
-    //         active: !!data[rowIndex][3]
-    //       };
-    //       await rest.post(`members`, newMember);
-    //       memberList = memberList.concat(newMember);
-    //     }
-    //   } catch (err) {
-    //     console.log(err);
-    //     data[rowIndex][2] = !data[rowIndex][2];
-    //   }
+    try {
+      const evType = typeList.find(t => t.id == data[rowIndex][0]);
+      if (evType) {
+        if (evType.type != data[rowIndex][1]) {
+          evType.type = data[rowIndex][1] as string;
+          await rest.put(`event-types/${evType.id}`, evType);
+        }
+      } else {
+        const newType = {
+          id: parseInt(data[rowIndex][0] as string),
+          type: data[rowIndex][1] as string,
+          points: parseInt(data[rowIndex][2] as string)
+        };
+        await rest.post(`event-types`, newType);
+        typeList = typeList.concat(newType);
+      }
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   onMount(() => {
@@ -103,20 +107,16 @@
       document.removeEventListener('keydown', keyListener);
     }
   });
-
-  let columns = ['ID', 'Type'];
-
-  let data = [...typeList.map(type => [type.id, type.type])];
-
-  let newRow = [getNextId(), 'Enter Type'];
 </script>
 
 <h2>Edit Event Types</h2>
 
-<div class="member-table">
+<div class="editable-table">
   <div class="table-header">
     <div class="table-header-cell">ID</div>
     <div class="table-header-cell">Type</div>
+    <div class="table-header-cell">Points</div>
+    <div class="table-header-cell">Delete</div>
   </div>
   <div class="table-body">
     {#each data as row, i}
@@ -134,6 +134,14 @@
         >
           {row[1]}
         </div>
+        <div class="table-cell">
+          <input type="number" step="1" min="0" bind:value={row[2]} />
+        </div>
+        <div class="table-cell">
+          <button class="del-btn" on:click={() => deleteRow(row)}>
+            <i class="fa fa-trash" />
+          </button>
+        </div>
       </div>
     {/each}
   </div>
@@ -146,17 +154,51 @@
 
 <style lang="scss">
   @import './styles';
+
+  .editable-table {
+    width: 80%;
+    max-width: 400px;
+  }
+
   .table-header,
   .table-row {
-    grid-template-columns: 50px 1fr 70px 60px;
+    grid-template-columns: 40px 3fr 1fr 40px;
+    gap: 10px;
   }
 
   .table-header-cell,
   .table-cell {
     padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    text-align: left;
 
-    &:first-of-type {
+    &:first-of-type,
+    &:last-of-type {
       text-align: center;
+      justify-content: center;
+    }
+
+    &:last-of-type {
+      padding: 0;
+    }
+  }
+
+  input[type='number'] {
+    width: 45px;
+  }
+
+  .del-btn {
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 25px;
+    width: 40px;
+
+    .fa {
+      margin: 0;
     }
   }
 </style>

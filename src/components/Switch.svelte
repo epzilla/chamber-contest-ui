@@ -1,5 +1,6 @@
 <script lang="ts">
   export let checked = false;
+  export let disabled = false;
   export let onChange: (val: boolean) => void = null;
 
   function handleChange(e) {
@@ -9,12 +10,12 @@
   }
 </script>
 
-<label class="switch">
-  <input type="checkbox" bind:checked on:change={handleChange} />
+<label class="switch" class:disabled>
+  <input type="checkbox" bind:checked on:change={handleChange} {disabled} />
   <span class="slider" />
 </label>
 
-<style>
+<style lang="scss">
   .switch {
     cursor: pointer;
     text-indent: -9999px;
@@ -24,6 +25,13 @@
     display: block;
     border-radius: 10px;
     position: relative;
+
+    &.disabled {
+      opacity: 0.5;
+      * {
+        cursor: not-allowed;
+      }
+    }
   }
 
   .switch input {
