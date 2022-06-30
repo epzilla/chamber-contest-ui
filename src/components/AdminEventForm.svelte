@@ -192,4 +192,8 @@
     grid-template-columns: 1fr auto;
     align-items: center;
   }
+
+  textarea {
+    max-height: 120px;
+  }
 </style>
