@@ -125,15 +125,17 @@
           case ActivityTypes.CALL_EMAIL:
             await rest.post(`events/ad-hoc`, {
               memberId: $user?.id,
-              callee,
+              guestNames: [callee],
+              guestCount: 0,
               phone,
               email,
-              eventType: [$eventTypes.find(e => e.id == 6)],
+              eventType: $eventTypes.find(e => e.id == 6),
               dateEntered: new Date(),
               startTime,
               endTime: genEndTimeFromStartTime(),
               title: genCallEmailTitle(),
               address: org,
+              org,
               isAdHoc: true
             });
             myEvents.update(current => {
@@ -202,7 +204,10 @@
     switch (chosenActivity) {
       case ActivityTypes.CALL_EMAIL:
         return (
-          subActivity != null && !!callee && (phoneIsValid() || emailIsValid())
+          subActivity != null &&
+          !!callee &&
+          (!phone || phoneIsValid()) &&
+          (!email || emailIsValid())
         );
       case ActivityTypes.DELIVERY:
         return !!org && !!deliveryNotes;
