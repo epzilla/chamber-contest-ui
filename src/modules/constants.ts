@@ -23,5 +23,11 @@ export enum ActivityTypes {
   EVENT = 'EVENT'
 }
 
+export enum SubActivityTypes {
+  CALL = 'CALL',
+  EMAIL = 'EMAIL',
+  CALL_AND_EMAIL = 'CALL_AND_EMAIL'
+}
+
 // strings
 export const SITE_TITLE = 'Home Run Challenge';

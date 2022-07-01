@@ -153,7 +153,7 @@
         type="datetime-local"
         name="startTime"
         id="startTime"
-        step="60"
+        step="300"
         bind:value={localStartTime}
       />
     </div>
@@ -163,7 +163,7 @@
         type="datetime-local"
         name="endTime"
         id="endTime"
-        step="60"
+        step="300"
         bind:value={localEndTime}
       />
     </div>

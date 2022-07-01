@@ -41,7 +41,13 @@
   .main-outer {
     height: 100%;
     display: grid;
-    grid-template-rows: auto 100px;
+    grid-template-rows: 1fr 100px;
+
+    &.with-spacer::after {
+      content: '';
+      display: block;
+      height: 20px;
+    }
   }
   .bottom-row {
     display: grid;

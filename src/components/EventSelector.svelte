@@ -25,19 +25,21 @@
 </script>
 
 {#if $pastEvents.length > 0}
-  <Svelecte
-    options={useAttended
-      ? $myEvents
-      : useUnattended
-      ? $myUnattendedEvents
-      : $pastEvents}
-    bind:value={selected}
-    valueField="id"
-    valueAsObject
-    labelField="title"
-    placeholder="Select an Event"
-    clearable
-    searchable
-    renderer={labelRenderer}
-  />
+  <div style="width: 350px; max-width: 85vw !important; display: inline-block;">
+    <Svelecte
+      options={useAttended
+        ? $myEvents
+        : useUnattended
+        ? $myUnattendedEvents
+        : $pastEvents}
+      bind:value={selected}
+      valueField="id"
+      valueAsObject
+      labelField="title"
+      placeholder="Select an Event"
+      clearable
+      searchable
+      renderer={labelRenderer}
+    />
+  </div>
 {/if}
