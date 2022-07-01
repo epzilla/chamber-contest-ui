@@ -49,6 +49,7 @@
   }
 
   async function onSubmit() {
+    isSubmitting = true;
     try {
       const endTime = new Date(localEndTime).toISOString();
       const startTime = new Date(localStartTime).toISOString();
@@ -77,11 +78,19 @@
   }
 
   async function onDelete() {
-    confirm('Are you sure you want to delete this event?') &&
-      rest.del(`events/${editingEvent.id}`).then(() => {
-        //TODO send success message
-        onDeleteSuccess();
-      });
+    if (confirm('Are you sure you want to delete this event?')) {
+      isSubmitting = true;
+      rest
+        .del(`events/${editingEvent.id}`, {
+          ...editingEvent,
+          email: $user.email
+        })
+        .then(() => {
+          //TODO send success message
+          onDeleteSuccess();
+        })
+        .finally(() => (isSubmitting = false));
+    }
   }
 
   onMount(() => {
@@ -182,6 +191,11 @@
     >
     <button on:click={onCancel}>Cancel</button>
   </div>
+  {#if isSubmitting}
+    <div class="loading-overlay">
+      <div class="loading-spinner" />
+    </div>
+  {/if}
 </div>
 
 <style lang="scss">
@@ -195,5 +209,36 @@
 
   textarea {
     max-height: 120px;
+  }
+
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+
+  .loading-spinner {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-top: 2px solid #000;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>

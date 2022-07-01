@@ -167,7 +167,6 @@
 
   $: {
     formIsValid = addEventFormIsValid();
-    console.log('changed');
   }
 </script>
 

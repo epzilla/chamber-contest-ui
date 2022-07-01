@@ -39,12 +39,13 @@ const put = async (url, data) => {
   return json;
 };
 
-const del = async url => {
+const del = async (url: string, data?: unknown) => {
   const res = await fetch(`${BASE_URL}${url}`, {
     method: 'DELETE',
     headers: {
       'Content-Type': 'application/json'
-    }
+    },
+    body: data ? JSON.stringify(data) : undefined
   });
 
   return res.status;
