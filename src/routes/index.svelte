@@ -74,7 +74,7 @@
   }
 
   function genDeliveryTitle() {
-    // return `${chosenActivity === ActivityTypes.CALL_EMAIL ? callee} ${phone} ${email}`;
+    return `Delivered to ${org}: ${deliveryNotes}`;
   }
 
   function genCallEmailTitle() {
@@ -123,7 +123,7 @@
       try {
         switch (chosenActivity) {
           case ActivityTypes.CALL_EMAIL:
-            await rest.post(`events/ad-hoc`, {
+            selectedEvent = await rest.post(`events/ad-hoc`, {
               memberId: $user?.id,
               guestNames: [callee],
               guestCount: 0,
@@ -135,44 +135,26 @@
               endTime: genEndTimeFromStartTime(),
               title: genCallEmailTitle(),
               address: org,
+              notes: '',
               org,
               isAdHoc: true
             });
-            myEvents.update(current => {
-              return [...current, selectedEvent];
-            });
-            myUnattendedEvents.update(current => {
-              return current.filter(e => e.id !== selectedEvent.id);
-            });
-            onToggleEventForm();
             break;
           case ActivityTypes.DELIVERY:
-            // await rest.post(`events/ad-hoc`, {
-            //     memberId: $user?.id,
-            //     eventId: selectedEvent.id,
-            //     guests: guestCount,
-            //     callee,
-            //     phone,
-            //     email,
-            //     deliveryNotes,
-            //     org,
-            //     eventType: [ chosenActivity === ActivityTypes.DELIVERY ? $eventTypes.find(e => e.id == 5) : 'delivery' ]],
-            //     dateEntered?: string,
-            //     startTime: string,
-            //     endTime?: string,
-            //     title: string,
-            //     address?: string,
-            //     notes?: string,
-            //     isAdHoc: true,
-            //     addToCal?: boolean,
-            //   });
-            //   myEvents.update(current => {
-            //     return [...current, selectedEvent];
-            //   });
-            //   myUnattendedEvents.update(current => {
-            //     return current.filter(e => e.id !== selectedEvent.id);
-            //   });
-            //   onToggleEventForm();
+            selectedEvent = await rest.post(`events/ad-hoc`, {
+              memberId: $user?.id,
+              guestNames: [callee],
+              guestCount: 0,
+              eventType: $eventTypes.find(e => e.id == 5),
+              dateEntered: new Date(),
+              startTime,
+              endTime: genEndTimeFromStartTime(),
+              title: genDeliveryTitle(),
+              address: org,
+              org,
+              notes: deliveryNotes,
+              isAdHoc: true
+            });
             break;
           case ActivityTypes.EVENT:
             await rest.post(`events/mark-attendance`, {
@@ -182,15 +164,15 @@
               guestNames: guestNames?.map(e => e.value) || [],
               org: ''
             });
-            myEvents.update(current => {
-              return [...current, selectedEvent];
-            });
-            myUnattendedEvents.update(current => {
-              return current.filter(e => e.id !== selectedEvent.id);
-            });
-            onToggleEventForm();
             break;
         }
+        myEvents.update(current => {
+          return [...current, selectedEvent];
+        });
+        myUnattendedEvents.update(current => {
+          return current.filter(e => e.id !== selectedEvent.id);
+        });
+        onToggleEventForm();
       } finally {
         submitting = false;
       }
