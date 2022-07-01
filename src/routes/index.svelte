@@ -1,5 +1,5 @@
 <script context="module">
-  import { ActivityTypes, BASE_URL } from '../modules/constants';
+  import { BASE_URL } from '../modules/constants';
 
   export async function load({ fetch }) {
     try {
@@ -30,6 +30,8 @@
   import rest from '../modules/rest';
   import { user } from '../modules/stores/users';
   import { myEvents, myUnattendedEvents } from '../modules/stores/events';
+  import { ActivityTypes } from '../modules/constants';
+  import { onDestroy, onMount } from 'svelte';
 
   export let events: ChamberEvent[];
 
@@ -45,9 +47,37 @@
   let addNames = false;
   let showAddEventForm = false;
   let submitting = false;
+  let formIsValid = false;
+  let keyListener;
+  let org = '';
+  let deliveryNotes = '';
+  let callee = '';
+  let phone = '';
+  let email = '';
+
+  function phoneIsValid() {
+    return !!phone && phone.length >= 10;
+  }
+
+  function emailIsValid() {
+    return !!email && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  }
 
   function onToggleEventForm() {
     showAddEventForm = !showAddEventForm;
+    if (!showAddEventForm) {
+      selectedEvent = null;
+      phone = '';
+      email = '';
+      callee = '';
+      org = '';
+      deliveryNotes = '';
+      guestCount = 0;
+      guestNames = [];
+      chosenActivity = null;
+      addNames = false;
+      formIsValid = false;
+    }
   }
 
   function onGuestCountChange(count: number) {
@@ -81,14 +111,51 @@
           myUnattendedEvents.update(current => {
             return current.filter(e => e.id !== selectedEvent.id);
           });
-          showAddEventForm = false;
-          selectedEvent = null;
-          submitting = false;
+          onToggleEventForm();
         } finally {
           submitting = false;
         }
     }
   }
+
+  function addEventFormIsValid() {
+    if (!chosenActivity) {
+      return false;
+    }
+    switch (chosenActivity) {
+      case ActivityTypes.CALL_EMAIL:
+        return !!callee && (phoneIsValid() || emailIsValid());
+      case ActivityTypes.DELIVERY:
+        return !!org && !!deliveryNotes;
+      case ActivityTypes.EVENT:
+        return !!selectedEvent;
+    }
+  }
+
+  onMount(() => {
+    if (typeof document !== 'undefined') {
+      keyListener = document.addEventListener('keyup', e => {
+        if (showAddEventForm) {
+          if (e.key === 'Escape') {
+            onToggleEventForm();
+            return;
+          }
+
+          formIsValid = addEventFormIsValid();
+
+          if (e.key === 'Enter' && formIsValid) {
+            onSubmit();
+          }
+        }
+      });
+    }
+  });
+
+  onDestroy(() => {
+    if (typeof document !== 'undefined') {
+      document.removeEventListener('keyup', keyListener);
+    }
+  });
 
   if (typeof window !== 'undefined') {
     let deviceId = localStorage.getItem('deviceId');
@@ -96,6 +163,11 @@
       deviceId = generateGuid();
       localStorage.setItem('deviceId', deviceId);
     }
+  }
+
+  $: {
+    formIsValid = addEventFormIsValid();
+    console.log('changed');
   }
 </script>
 
@@ -126,14 +198,23 @@
             id="choose-activity"
             options={activityOptions}
             value={chosenActivity}
-            onSelect={v => (chosenActivity = v.key)}
+            onSelect={v => {
+              chosenActivity = v.key;
+              formIsValid = addEventFormIsValid();
+            }}
           />
         </div>
         {#if chosenActivity === ActivityTypes.EVENT}
           <div class="event-form">
             <div class="form-group">
               <label>Which event did you attend?</label>
-              <EventSelector bind:selected={selectedEvent} useUnattended />
+              <EventSelector
+                bind:selected={selectedEvent}
+                useUnattended
+                onSelect={e => {
+                  formIsValid = addEventFormIsValid();
+                }}
+              />
             </div>
             {#if selectedEvent}
               <div class="form-group">
@@ -181,6 +262,7 @@
                   placeholder="Name"
                   id="name-input"
                   name="name-input"
+                  bind:value={callee}
                 />
               </div>
               <div class="form-group-inline">
@@ -190,6 +272,7 @@
                   placeholder="e.g. (256) 555-5555"
                   id="phone-input"
                   name="phone-input"
+                  bind:value={phone}
                 />
               </div>
               <div class="form-group-inline">
@@ -199,6 +282,7 @@
                   placeholder="e.g. chamberperson@madison.rocks"
                   id="email-input"
                   name="email-input"
+                  bind:value={email}
                 />
               </div>
             </div>
@@ -207,18 +291,34 @@
           <div class="delivery-form">
             <div class="form-group">
               <label>Where to?</label>
-              <input type="text" placeholder="Organization/Company" />
+              <input
+                type="text"
+                placeholder="Organization/Company"
+                bind:value={org}
+              />
             </div>
             <div class="form-group">
               <label>Desribe what you delivered:</label>
-              <input type="text" placeholder="Describe your delivery" />
+              <input
+                type="text"
+                placeholder="Describe your delivery"
+                bind:value={deliveryNotes}
+              />
             </div>
           </div>
         {/if}
       </div>
       <div class="bottom-row">
-        <button class="primary" on:click={onSubmit} disabled={submitting}>
-          <span class="fa fa-check" />Count Me!</button
+        <button
+          class="primary"
+          on:click={onSubmit}
+          disabled={submitting || !formIsValid}
+        >
+          <span class="fa fa-check" />{!chosenActivity
+            ? 'Submit'
+            : chosenActivity === ActivityTypes.EVENT
+            ? 'Count Me!'
+            : 'Log it!'}</button
         >
         <button on:click={onToggleEventForm}>Cancel</button>
       </div>

@@ -6,16 +6,21 @@
   } from '../modules/stores/events';
   import Svelecte from 'svelecte';
   import { format } from 'date-fns';
-  export let selected = null;
+  export let selected: ChamberEvent | null = null;
   export let useAttended = false;
   export let useUnattended = false;
   export let hideAdHoc = false;
+  export let onSelect: ((event: ChamberEvent) => void) | null = null;
 
   function labelRenderer(option: ChamberEvent) {
     return `
         <span>
             ${format(new Date(option.startTime), 'MM/d')} - ${option.title}
       `;
+  }
+
+  $: {
+    onSelect(selected);
   }
 </script>
 
