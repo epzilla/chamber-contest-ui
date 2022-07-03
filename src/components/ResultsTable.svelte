@@ -250,7 +250,17 @@
 
       .events-table-headers {
         font-weight: 700;
-        border-bottom: 1px solid #ccc;
+        border-bottom: 1px solid #aaa;
+      }
+
+      .events-table-row {
+        // margin: 0.5rem 0;
+        padding: 0.5rem 0;
+        border-bottom: 1px solid #ddd;
+
+        &:last-child {
+          border-bottom: none;
+        }
       }
     }
 

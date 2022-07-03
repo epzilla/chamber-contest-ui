@@ -48,7 +48,7 @@
   let showAttendanceForm = false;
   let submitting = false;
   let listInitted = false;
-  let selectedAttendee = $user?.id ?? null;
+  $: selectedAttendee = $user?.id ?? null;
   let guestCount = 0;
   let addNames = false;
   let futureEventInterval;
@@ -61,7 +61,6 @@
   $: {
     if (liveMemberList?.length && liveAttendeeList && event && !listInitted) {
       listInitted = true;
-      selectedAttendee = nonAttendees?.length ? nonAttendees[0].id : null;
     }
 
     if (isFutureEvent && !futureEventInterval) {
