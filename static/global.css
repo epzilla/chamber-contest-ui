@@ -483,6 +483,7 @@ a.style-as-button {
   border-radius: 0.1875rem;
   text-decoration: none;
   white-space: normal;
+  touch-action: manipulation;
 }
 button[disabled] {
   opacity: 0.5;
