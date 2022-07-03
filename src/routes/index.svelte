@@ -3,11 +3,14 @@
 
   export async function load({ fetch }) {
     try {
-      const eventResult = await fetch(`${BASE_URL}upcoming-events`);
-      const events = await eventResult.json();
+      const upcomingEventResult = await fetch(`${BASE_URL}upcoming-events`);
+      const upcomingEvents = await upcomingEventResult.json();
+      const pastEventResult = await fetch(`${BASE_URL}past-events`);
+      const pastEvents = await pastEventResult.json();
       return {
         props: {
-          events
+          pastEvents,
+          upcomingEvents
         }
       };
     } catch (err) {
@@ -34,7 +37,8 @@
   import { onDestroy, onMount } from 'svelte';
   import { eventTypes } from '../modules/stores/eventTypes';
 
-  export let events: ChamberEvent[];
+  export let upcomingEvents: ChamberEvent[];
+  export let pastEvents: ChamberEvent[];
 
   let activityOptions: KVP[] = [
     { key: ActivityTypes.CALL_EMAIL, value: 'I called/emailed someone' },
@@ -237,21 +241,37 @@
   }
 </script>
 
-{#if events}
-  <div class="main events">
-    <h2 class="align-center primary-text">Upcoming Events</h2>
-    <ul class="events-list">
-      {#each events as event}
-        <EventBlock {event} />
-      {/each}
-    </ul>
-  </div>
-{/if}
+<div class="home-main">
+  <div class="events-main">
+    {#if upcomingEvents}
+      <div class="main events">
+        <h2 class="align-center primary-text">Upcoming Events</h2>
+        <ul class="events-list">
+          {#each upcomingEvents as event}
+            <EventBlock {event} />
+          {/each}
+        </ul>
+      </div>
+    {/if}
 
-<button class="ad-hoc-event-btn primary" on:click={onToggleEventForm}>
-  <span class="fa fa-plus-circle" />
-  <span>Log an Activity</span></button
->
+    {#if pastEvents}
+      <div class="main events">
+        <h2 class="align-center primary-text">Recent Events</h2>
+        <ul class="events-list">
+          {#each pastEvents as event}
+            <EventBlock {event} />
+          {/each}
+        </ul>
+      </div>
+    {/if}
+  </div>
+  <div class="float-wrapper">
+    <button class="ad-hoc-event-btn primary" on:click={onToggleEventForm}>
+      <span class="fa fa-plus-circle" />
+      <span>Log an Activity</span></button
+    >
+  </div>
+</div>
 
 <PopModal show={showAddEventForm} onClose={onToggleEventForm}>
   <div class="pop-modal-form">
@@ -448,4 +468,32 @@
 
 <style lang="scss">
   @import '../styles/modal-form.scss';
+
+  main {
+    height: 100%;
+  }
+  .home-main {
+    display: grid;
+    grid-template-rows: 1fr 50px;
+    height: 100%;
+    width: 100%;
+  }
+
+  .events-main {
+    overflow: auto;
+  }
+
+  .float-wrapper {
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 0 10px;
+  }
+
+  @media screen and (max-width: 768px) {
+    .ad-hoc-event-btn {
+      width: 100%;
+      max-width: unset;
+    }
+  }
 </style>

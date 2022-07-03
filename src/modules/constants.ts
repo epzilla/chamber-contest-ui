@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-export const WS_BASE_URL = 'wss://chamber-api.herokuapp.com';
-export const BASE_URL = 'https://chamber-api.herokuapp.com/';
+export const WS_BASE_URL = 'ws://10.0.1.196:3003';
+export const BASE_URL = 'http://10.0.1.196:3003/';
 
 export const ROUTES = [
   { title: 'Home', href: '/' },

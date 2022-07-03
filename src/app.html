@@ -106,6 +106,20 @@
         return smoothScroll;
       });
     </script>
+    <script>
+      document.documentElement.style.setProperty(
+        '--vh',
+        `${window.innerHeight * 0.01}px`
+      );
+      // We listen to the resize event
+      window.addEventListener('resize', () => {
+        // We execute the same script as before
+        document.documentElement.style.setProperty(
+          '--vh',
+          `${window.innerHeight * 0.01}px`
+        );
+      });
+    </script>
     %svelte.head%
   </head>
 
