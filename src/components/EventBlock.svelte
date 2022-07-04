@@ -26,7 +26,7 @@
 <li class="event" class:attended={didAttend}>
   <a href={`/events/${event.id}`}>
     <h3 class="event-title" class:with-att-mark={didAttend}>
-      <span>{event.title}</span>
+      <span class="underline-on-hover">{event.title}</span>
       <span class="fa fa-check-circle" />
     </h3>
     <h5>
