@@ -30,14 +30,3 @@
   export let player;
   export let stats;
 </script>
-
-<!-- {#if player}
-  <div class="main player-profile">
-    <h2 class="align-center primary-text">{getFullPlayerName(player)}</h2>
-    {#if stats}
-      {#each stats as match}
-        <BoxScore {match} />
-      {/each}
-    {/if}
-  </div>
-{/if} -->

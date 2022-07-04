@@ -121,7 +121,7 @@
 </script>
 
 {#if event}
-  <div class="main player-profile">
+  <div class="main single-event-details">
     <h2 class="align-center primary-text">{event.title}</h2>
     <p>{event.address}</p>
     {#if event.startTime}
@@ -134,19 +134,26 @@
     {#if !isFutureEvent}
       <h4>Chamber Attendees:</h4>
       {#each liveAttendeeList as attendee}
-        <p>
-          <span class="fa fa-check-circle" />
-          <span class={attendee.id === $user?.id ? 'my-user' : ''}
-            >{attendee.name}</span
-          >
+        <p class:my-user={attendee.id === $user?.id}>
+          <span
+            class="fa"
+            class:fa-check-circle={attendee.id === $user?.id}
+            class:fa-check-circle-o={attendee.id !== $user?.id}
+          />
+          <span>{attendee.name}</span>
         </p>
       {/each}
 
       {#if userDidAttend}
-        <p class="attendance-highlight">Your attendance earned you X points!</p>
+        <p class="attendance-highlight">
+          Your attendance earned you {event.eventType[0].points}
+          {event.eventType[0].points > 1 ? 'points' : 'point'}!
+        </p>
       {/if}
       <button on:click={() => (showAttendanceForm = true)}
-        >{userDidAttend ? 'Edit Attendance' : 'Mark Attended'}</button
+        >{userDidAttend
+          ? 'Edit Your Attendance'
+          : 'Mark Your Attendance'}</button
       >
       <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
         <div class="pop-modal-form">
@@ -202,21 +209,29 @@
 <style lang="scss">
   @import '../../styles/modal-form.scss';
 
+  .single-event-details {
+    h2 {
+      text-align: left;
+    }
+  }
+
   .member-select {
     min-width: 250px;
     height: 40px;
     font-size: 1rem;
   }
 
-  .my-user {
+  .my-user,
+  .my-user * {
     font-weight: bold;
+    color: var(--colorAttendedEvent);
   }
 
   .attendance-highlight {
     font-weight: bold;
     width: 100%;
     padding: 10px;
-    background-color: rgb(33, 162, 93);
+    background-color: var(--colorAttendedEvent);
     border-radius: 3px;
     color: white;
   }

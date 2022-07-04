@@ -1,4 +1,5 @@
 import { writable } from 'svelte/store';
+import { sortEventsByTime } from '../helpers';
 import rest from '../rest';
 
 let userObj: Member;
@@ -28,6 +29,13 @@ if (userObj) {
       if (!data?.isActive) {
         window.localStorage.removeItem('user');
         window.location.href = '/welcome';
+      } else {
+        rest
+          .get(`events-by-member/${data.id}`)
+          .then(({ attended }: EventsByMemberRsp) => {
+            attended.sort(sortEventsByTime);
+            userAttendedEvents.set(attended);
+          });
       }
     })
     .catch(err => {
@@ -36,3 +44,4 @@ if (userObj) {
 }
 
 export const user = writable<Member | null>(userObj);
+export const userAttendedEvents = writable<ChamberEvent[]>([]);

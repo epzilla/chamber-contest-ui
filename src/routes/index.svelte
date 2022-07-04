@@ -488,7 +488,9 @@
     align-items: flex-end;
     justify-content: flex-end;
     padding: 0 10px;
-    box-shadow: 0 -8px 12px 0px rgb(0 0 0 / 15%);
+    background-color: var(--pageBg);
+    box-shadow: 6px 0px 0px 0px var(--pageBg), -6px 0px 0px 0px var(--pageBg),
+      0 -8px 12px 0px rgb(0 0 0 / 15%);
     z-index: 1;
   }
 

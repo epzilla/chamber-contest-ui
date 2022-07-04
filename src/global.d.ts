@@ -69,6 +69,13 @@ type TimePeriodTotalRsp = {
   pointTotals: PointsTotal[];
 };
 
+type EventsByMemberRsp = {
+  attended: ChamberEvent[];
+  attendedAdHoc: ChamberEvent[];
+  attendedNonAdHoc: ChamberEvent[];
+  unattended: ChamberEvent[];
+};
+
 type Alert = {
   id: string;
   type: string;

@@ -150,7 +150,10 @@
   --secondaryBtnText: white;
   --footerTextColor: #405784;
   --activeLinkColor: white;
-  --scoreFlashColor: rgba(68, 178, 181, 0.5);
+  --successGreen: rgb(33, 162, 93);
+  --colorAttendedEvent: var(--successGreen);
+  --brandPrimary: #012f65;
+  --brandSecondary: #76a22f;
   --heading-with-extender-color: #ccc;
   --mainFont: -apple-system, BlinkMacSystemFont, sytem-ui, 'Helvetica Neue',
     arial, sans-serif;
@@ -189,10 +192,10 @@ body {
 }
 
 main {
-  margin-top: 56px;
   height: calc(100% - 56px);
   width: 100%;
-  max-width: 100vw;
+  max-width: 800px;
+  margin: 56px auto 0 auto;
   padding: 1rem 0.25rem 1rem 0.25rem;
   display: flex;
   flex-direction: column;
@@ -537,6 +540,16 @@ button .fa {
 .events-list {
   list-style-type: none;
 }
+.attendance-highlight {
+  font-weight: bold;
+  width: 100%;
+  padding: 5px;
+  background-color: var(--brandSecondary);
+  background-color: var(--colorAttendedEvent);
+  border-radius: 3px;
+  color: white;
+}
+
 @media screen and (min-width: 600px) {
   .row-if-large {
     flex-direction: row;
