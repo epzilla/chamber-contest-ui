@@ -44,7 +44,7 @@
   @media screen and (min-width: 600px) {
     a.attendance-highlight {
       color: white;
-      display: inline;
+      display: inline-block;
       padding: 0.5rem;
       span:first-child {
         margin-right: 10px;
