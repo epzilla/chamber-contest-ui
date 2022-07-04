@@ -236,13 +236,6 @@ button {
   text-decoration: underline;
 }
 
-@media (min-width: 1000px) {
-  main {
-    /* max-width: 95%; */
-    /* margin: 56px auto 0 auto; */
-  }
-}
-
 @media (max-width: 600px) {
   main {
     padding: 1rem 0.25rem 1rem 0.25rem;

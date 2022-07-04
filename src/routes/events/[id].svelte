@@ -34,6 +34,7 @@
   import { user } from '../../modules/stores';
   import { getFirstName } from '../../modules/helpers';
   import rest from '../../modules/rest';
+  import AttendanceNotice from '../../components/AttendanceNotice.svelte';
 
   export let event: ChamberEvent;
   export let attendees: Member[];
@@ -145,10 +146,7 @@
       {/each}
 
       {#if userDidAttend}
-        <p class="attendance-highlight">
-          Your attendance earned you {event.eventType[0].points}
-          {event.eventType[0].points > 1 ? 'points' : 'point'}!
-        </p>
+        <AttendanceNotice {event} />
       {/if}
       <button on:click={() => (showAttendanceForm = true)}
         >{userDidAttend

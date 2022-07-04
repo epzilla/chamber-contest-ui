@@ -2,25 +2,13 @@
   import { userAttendedEvents } from '../modules/stores';
 
   import AddToCalendarButton from './AddToCalendarButton.svelte';
+  import AttendanceNotice from './AttendanceNotice.svelte';
   import DateTime from './DateTime.svelte';
 
   export let event: ChamberEvent;
   export let isUpcomingEvent: boolean = false;
   $: didAttend = $userAttendedEvents.find(e => e.id === event.id);
   $: evType = event?.eventType[0];
-
-  function getUrlForContest() {
-    const now = new Date();
-    const start = new Date(event.startTime);
-    if (
-      now.getFullYear() === start.getFullYear() &&
-      now.getMonth() === start.getMonth()
-    ) {
-      return '/contest';
-    } else {
-      return `/contest/monthly/${start.getMonth() + 1}-${start.getFullYear()}`;
-    }
-  }
 </script>
 
 <li class="event" class:attended={didAttend}>
@@ -30,19 +18,15 @@
       <span class="fa fa-check-circle" />
     </h3>
     <h5>
-      {#if didAttend}
-        <a class="attendance-highlight" href={getUrlForContest()}
-          ><span>
-            Your attendance earned you {evType.points}
-            {evType.points > 1 ? 'points' : 'point'}!
-          </span>
-          <span class="fa fa-circle-arrow-right" />
-        </a>
-      {:else}
-        <span>{evType.type} - {evType.points}</span>
+      <span>{evType.type}</span>
+      {#if !didAttend}
+        <span> - {evType.points}</span>
         <span>{evType.points > 1 ? 'points' : 'point'}</span>
       {/if}
     </h5>
+    {#if didAttend}
+      <AttendanceNotice {event} />
+    {/if}
     <p class="event-date"><DateTime date={event.startTime} /></p>
     {#if isUpcomingEvent}
       <AddToCalendarButton {event} />
@@ -64,7 +48,7 @@
       padding: 1rem;
 
       h3 {
-        margin: 5px;
+        margin: 5px 0;
 
         .fa {
           display: none;
@@ -73,7 +57,11 @@
       }
 
       h5 {
-        margin: 5px;
+        margin: 5px 0;
+      }
+
+      h5.att-notif {
+        margin: 10px 0;
       }
     }
 
@@ -85,42 +73,13 @@
           display: inline-block;
         }
       }
-
-      h5 {
-        margin: 1rem 0;
-        padding: 0 5px;
-      }
     }
-  }
-
-  a.attendance-highlight {
-    padding: 8px;
-    color: white;
   }
 
   @media screen and (max-width: 600px) {
     .event {
       h5 {
         width: 100%;
-      }
-      a.attendance-highlight {
-        width: 100%;
-        display: grid;
-        grid-template-columns: 1fr 1rem;
-        align-items: center;
-      }
-    }
-  }
-
-  @media screen and (min-width: 600px) {
-    .event {
-      a .attendance-highlight {
-        color: white;
-        display: inline;
-        padding: 0.5rem;
-        span:first-child {
-          margin-right: 10px;
-        }
       }
     }
   }
