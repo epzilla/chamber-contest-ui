@@ -1,5 +1,4 @@
 @import url('//fonts.googleapis.com/css?family=Montserrat:800|Lato:300,400,700,900,400italic|Sanchez|Press+Start+2P');
-@import '/font-awesome-4.7.0/css/font-awesome.min.css';
 
 @keyframes flip-in {
   0% {
@@ -153,10 +152,10 @@
   --activeLinkColor: white;
   --scoreFlashColor: rgba(68, 178, 181, 0.5);
   --heading-with-extender-color: #ccc;
-  --mainFont: 'Lato', -apple-system, BlinkMacSystemFont, sytem-ui,
-    'Helvetica Neue', arial, sans-serif;
-  --blockFont: 'Sanchez', 'Lato', -apple-system, BlinkMacSystemFont, sytem-ui,
-    'Helvetica Neue', arial, sans-serif;
+  --mainFont: -apple-system, BlinkMacSystemFont, sytem-ui, 'Helvetica Neue',
+    arial, sans-serif;
+  --blockFont: 'Montserrat', 'Sanchez', 'Lato', -apple-system,
+    BlinkMacSystemFont, sytem-ui, 'Helvetica Neue', arial, sans-serif;
 }
 
 * {
@@ -208,6 +207,7 @@ main > h1 {
 .main {
   padding-left: 1rem;
   padding-right: 1rem;
+  width: 100%;
 }
 
 input,

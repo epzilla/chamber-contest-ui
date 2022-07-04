@@ -248,7 +248,7 @@
         <h2 class="align-center primary-text">Upcoming Events</h2>
         <ul class="events-list">
           {#each upcomingEvents as event}
-            <EventBlock {event} />
+            <EventBlock {event} isUpcomingEvent />
           {/each}
         </ul>
       </div>
@@ -267,7 +267,7 @@
   </div>
   <div class="float-wrapper">
     <button class="ad-hoc-event-btn primary" on:click={onToggleEventForm}>
-      <span class="fa fa-plus-circle" />
+      <span class="fa fa-circle-plus" />
       <span>Log an Activity</span></button
     >
   </div>
@@ -488,6 +488,8 @@
     align-items: flex-end;
     justify-content: flex-end;
     padding: 0 10px;
+    box-shadow: 0 -8px 12px 0px rgb(0 0 0 / 15%);
+    z-index: 1;
   }
 
   @media screen and (max-width: 768px) {

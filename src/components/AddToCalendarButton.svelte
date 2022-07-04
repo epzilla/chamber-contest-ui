@@ -60,8 +60,14 @@
   }
 </script>
 
-<div class="add-to-calendar-btn">
-  <button class="btn" on:click={toggleDropdown}>Add to Calendar</button>
+<div
+  class="add-to-calendar-btn"
+  on:click|preventDefault
+  on:click|stopPropagation
+>
+  <button class="btn add-to-cal-main-btn" on:click={toggleDropdown}
+    ><span class="fa fa-calendar-plus" /><span>Add to Calendar</span></button
+  >
   <ul class={isShowingDropdown ? 'show' : ''}>
     <li>
       <button on:click={addToICal}>
@@ -189,38 +195,57 @@
 </div>
 
 <style lang="scss">
-  ul {
-    display: none;
-    list-style-type: none;
-    background: white;
-    border: 1px solid #adadad;
-    border-top: none;
-    border-bottom-left-radius: 3px;
-    border-bottom-right-radius: 3px;
+  .add-to-calendar-btn {
+    width: 150px;
+    position: relative;
 
-    li {
-      cursor: pointer;
-      border-top: 1px solid #adadad;
-
-      button {
-        border: none;
-        background: none;
-        padding: 5px;
-        cursor: pointer;
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-      }
-
-      &:hover {
-        background-color: #cee2f4;
-      }
+    * {
+      font-size: 10pt;
+    }
+    .add-to-cal-main-btn {
+      background-color: #ffc4be;
+      // font-size: 10pt;
+      padding: 5px 8px;
+      height: 30px;
+      width: 100%;
     }
 
-    &.show {
-      display: block;
+    ul {
+      display: none;
+      list-style-type: none;
+      background: white;
+      border: 1px solid #adadad;
+      border-top: none;
+      border-bottom-left-radius: 3px;
+      border-bottom-right-radius: 3px;
+      box-shadow: var(--subtle-shadow);
+      position: absolute;
+      width: 100%;
+
+      li {
+        cursor: pointer;
+        border-top: 1px solid #adadad;
+
+        button {
+          border: none;
+          background: none;
+          padding: 5px;
+          cursor: pointer;
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: flex-start;
+        }
+
+        &:hover {
+          background-color: #cee2f4;
+        }
+      }
+
+      &.show {
+        display: block;
+      }
     }
   }
 

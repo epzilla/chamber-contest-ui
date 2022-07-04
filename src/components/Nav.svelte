@@ -173,6 +173,8 @@
   }
   @media (max-width: 800px) {
     .header {
+      justify-content: center;
+
       nav {
         flex-direction: column;
         position: fixed;
@@ -227,10 +229,13 @@
     }
     button.menu-btn {
       display: inline-flex;
-      height: 34px;
+      height: 30px;
       background-color: var(--secondary);
       color: var(--primary);
       border: none;
+      font-size: 10pt;
+      position: absolute;
+      left: 10px;
     }
     .nav-modal-backdrop.show {
       display: flex;

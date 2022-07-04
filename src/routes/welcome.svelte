@@ -43,26 +43,44 @@
   }
 </script>
 
-<h1>Welcome to the 2022 Madison Chamber Home Run Challenge!</h1>
+<section class="welcome">
+  <h1>Welcome to the 2022 Madison Chamber Home Run Challenge!</h1>
 
-<p>Select your name from our list of ambassadors below to get started:</p>
+  <p>Select your name from our list of ambassadors below to get started:</p>
 
-<select name="member-select" class="member-select" on:change={onSelectChange}>
-  <option value=""> -- Select your name -- </option>
-  {#each memberList as member}
-    <option value={member.id}>{member.name}</option>
-  {/each}
-</select>
+  <select name="member-select" class="member-select" on:change={onSelectChange}>
+    <option value=""> -- Select your name -- </option>
+    {#each memberList as member}
+      <option value={member.id}>{member.name}</option>
+    {/each}
+  </select>
 
-<button class="primary" on:click={onSubmit} disabled={!selectedMember}
-  >Lets' Go!</button
->
+  <button class="primary" on:click={onSubmit} disabled={!selectedMember}
+    ><span>Let's Go!</span></button
+  >
+</section>
 
 <style lang="scss">
+  .welcome {
+    padding: 2rem;
+    text-align: center;
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+    }
+  }
+
   .member-select {
     font-size: 16px;
     width: calc(100% - 40px);
     height: 40px;
     margin-bottom: 20px;
+  }
+
+  .primary {
+    font-size: 1.2rem;
+    width: 200px;
+    height: 50px;
   }
 </style>
