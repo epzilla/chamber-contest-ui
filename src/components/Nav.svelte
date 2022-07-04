@@ -256,4 +256,26 @@
       }
     }
   }
+
+  @media screen and (max-width: 930px) and (min-width: 700px) {
+    .header {
+      h1 {
+        font-size: 16px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 880px) and (min-width: 800px) {
+    .header {
+      h1 {
+        font-size: 14px;
+      }
+
+      nav {
+        a {
+          padding: 0 10px;
+        }
+      }
+    }
+  }
 </style>
