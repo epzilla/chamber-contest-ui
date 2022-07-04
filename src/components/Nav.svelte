@@ -22,6 +22,10 @@
     ) {
       return true;
     }
+
+    if (v.includes('contest') && href.includes('/contest')) {
+      return true;
+    }
     return view === href;
   }
 </script>
