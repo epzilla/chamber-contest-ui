@@ -2,7 +2,7 @@
   import { format } from 'date-fns';
 
   export let date: string;
-  export let dateFormat: string = 'MMM. do, yyyy @ h:mm aaa';
+  export let dateFormat: string = 'MMM do, yyyy @ h:mm aaa';
   $: formattedDate = format(new Date(date), dateFormat);
 </script>
 

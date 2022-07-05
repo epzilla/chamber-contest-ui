@@ -92,7 +92,7 @@
                 {#each events as { eventId, title, startTime, guests, points }}
                   <div class="events-table-row">
                     <div>{title}</div>
-                    <div>{format(new Date(startTime), 'MM/d')}</div>
+                    <div>{format(new Date(startTime), 'M/d')}</div>
                     <div>{guests || 0}</div>
                     <div class="bold">{points}</div>
                   </div>
@@ -251,6 +251,11 @@
       .events-table-headers {
         font-weight: 700;
         border-bottom: 1px solid #aaa;
+      }
+
+      .events-table-body {
+        max-height: 250px;
+        overflow: auto;
       }
 
       .events-table-row {

@@ -7,17 +7,17 @@
   export async function load({ fetch, page }) {
     try {
       const now = new Date();
-      const timePeriod = format(now, 'MMMM Y');
+
       const currentYear = now.getFullYear();
       const currentMonth = now.getMonth() + 1;
-      const rsp = await fetch(`${BASE_URL}totals/current-month`);
+      const rsp = await fetch(`${BASE_URL}yearly-totals/${currentYear}`);
+      const json: TimePeriodTotalRsp = await rsp.json();
       const monthsRsp = await fetch(`${BASE_URL}valid-months`);
-      const totalsJson: TimePeriodTotalRsp = await rsp.json();
       const validMonths: ValidMonthEntry[] = await monthsRsp.json();
-      const totals = calculateTotalsForTimePeriod(totalsJson);
+      const totals = calculateTotalsForTimePeriod(json);
       return {
         props: {
-          timePeriod,
+          timePeriod: currentYear,
           currentYear,
           currentMonth,
           totals,
@@ -91,14 +91,10 @@
 <ResultsTable {totals} {timePeriod} isCurrent />
 
 <hr />
-<a href={`/contest/yearly/${currentYear}`} class="style-as-button"
-  ><h4>View Year-to-date Totals</h4></a
->
-<h4>View Previous Months:</h4>
+
+<h4>View Monthly Totals:</h4>
 {#each validMonths as { month, year }}
-  {#if month !== currentMonth || year !== currentYear}
-    <a href={`/contest/monthly/${month}-${year}`} class="style-as-button"
-      ><h4>{getMonth(month)} {year}</h4></a
-    >
-  {/if}
+  <a href={`/contest/monthly/${month}-${year}`} class="style-as-button"
+    ><h4>{getMonth(month)} {year}</h4></a
+  >
 {/each}
