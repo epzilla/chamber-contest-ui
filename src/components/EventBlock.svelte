@@ -47,8 +47,9 @@
       color: var(--colorDefaultText);
       padding: 1rem;
 
-      h3 {
+      h3.event-title {
         margin: 5px 0;
+        font-weight: 600;
 
         .fa {
           display: none;
