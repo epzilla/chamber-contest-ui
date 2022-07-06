@@ -13,7 +13,7 @@ export type SocketUpdate<T> = {
   data: T;
 };
 
-let ws: WebSocket = null;
+export let websocketConnection: WebSocket = null;
 let initialized = false;
 let socketId: string;
 
@@ -22,15 +22,15 @@ export const socket = new Subject<SocketUpdate<unknown>>();
 
 const createWsConnection = devId => {
   socketId = devId;
-  ws = new WebSocket(WS_BASE_URL);
-  ws.onerror = e => console.error(e);
-  ws.onopen = () =>
+  websocketConnection = new WebSocket(WS_BASE_URL);
+  websocketConnection.onerror = e => console.error(e);
+  websocketConnection.onopen = () =>
     console.debug(`WebSocket connection established for device ID: ${devId}`);
-  ws.onclose = () => {
+  websocketConnection.onclose = () => {
     console.debug('WebSocket connection closed. Attempting to re-connect...');
     createWsConnection(devId);
   };
-  ws.onmessage = m => {
+  websocketConnection.onmessage = m => {
     if (m?.data) {
       const json = JSON.parse(m.data);
       if (json?.data) {
@@ -61,7 +61,7 @@ deviceId.subscribe(devId => {
     if (!initialized) {
       createWsConnection(devId);
     } else {
-      ws.close();
+      websocketConnection.close();
       createWsConnection(devId);
     }
   }
