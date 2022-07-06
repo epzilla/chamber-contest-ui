@@ -202,7 +202,6 @@
             });
             break;
           case ActivityTypes.EVENT:
-            throw new Error('Welp, everything is broken.');
             await rest.post(`events/mark-attendance`, {
               memberId: $user?.id,
               eventId: selectedEvent.id,
