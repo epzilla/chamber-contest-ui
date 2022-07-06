@@ -77,7 +77,7 @@ type EventsByMemberRsp = {
 };
 
 type Alert = {
-  id: string;
+  id?: string;
   type: string;
   msg: string;
   action?: () => void;

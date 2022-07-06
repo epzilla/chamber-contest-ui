@@ -36,6 +36,7 @@
   import { ActivityTypes, SubActivityTypes } from '../modules/constants';
   import { onDestroy, onMount } from 'svelte';
   import { eventTypes } from '../modules/stores/eventTypes';
+  import { addAlert } from '../modules/stores/alerts';
 
   export let upcomingEvents: ChamberEvent[];
   export let pastEvents: ChamberEvent[];
@@ -89,6 +90,42 @@
         return `Emailed ${callee}`;
       case SubActivityTypes.CALL_AND_EMAIL:
         return `Called and emailed ${callee}`;
+    }
+  }
+
+  function genCallEmailSuccessSubstring(
+    subActivityType: SubActivityTypes,
+    contact: string
+  ) {
+    switch (subActivityType) {
+      case SubActivityTypes.CALL:
+        return `calling ${contact}`;
+      case SubActivityTypes.EMAIL:
+        return `emailing ${contact}`;
+      case SubActivityTypes.CALL_AND_EMAIL:
+        return `calling and emailing ${contact}`;
+    }
+  }
+
+  function genSuccessMsg(
+    ev: ChamberEvent,
+    activity: ActivityTypes,
+    subActivityType: SubActivityTypes,
+    contact: string,
+    orgName: string
+  ) {
+    switch (activity) {
+      case ActivityTypes.CALL_EMAIL:
+        return `Success! You earned ${
+          ev.eventType[0].points
+        } points for ${genCallEmailSuccessSubstring(
+          subActivityType,
+          contact
+        )}.`;
+      case ActivityTypes.DELIVERY:
+        return `Success! You earned ${ev.eventType[0].points} points for your delivery to ${orgName}.`;
+      case ActivityTypes.EVENT:
+        return `Success! You earned ${ev.eventType[0].points} points for attending ${ev.title}.`;
     }
   }
 
@@ -176,7 +213,22 @@
         myUnattendedEvents.update(current => {
           return current.filter(e => e.id !== selectedEvent.id);
         });
+        addAlert({
+          type: 'success',
+          msg: genSuccessMsg(
+            selectedEvent,
+            chosenActivity,
+            subActivity,
+            callee,
+            org
+          ),
+          timeout: 5000000,
+          clickable: true
+          // action: onToggleEventForm
+        });
         onToggleEventForm();
+      } catch (e) {
+        console.error(e);
       } finally {
         submitting = false;
       }

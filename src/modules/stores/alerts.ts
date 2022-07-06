@@ -6,25 +6,10 @@ export const alerts = writable([]);
 export const addAlert = (alert: Alert) => {
   alerts.update(n => {
     const id = generateGuid();
-    const timeoutId = setTimeout(() => {
+    setTimeout(() => {
       alerts.update(al => al.filter(a => a.id !== id));
-    }, alert.timeout || 5000);
+    }, alert.timeout || 10000);
 
-    if (
-      typeof Notification !== 'undefined' &&
-      Notification.permission === 'granted'
-    ) {
-      const notif = new Notification('Pong', {
-        body: alert.msg
-      });
-      if (alert.action) {
-        notif.addEventListener('click', () => {
-          alert.action();
-          clearTimeout(timeoutId);
-          alerts.update(al => al.filter(a => a.id !== id));
-        });
-      }
-    }
     return [...n, { ...alert, id }];
   });
 };
