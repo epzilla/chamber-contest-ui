@@ -38,6 +38,7 @@
   import { onDestroy, onMount } from 'svelte';
   import { eventTypes } from '../modules/stores/eventTypes';
   import { addAlert } from '../modules/stores/alerts';
+  import { logCaughtError } from '../modules/errors';
 
   export let upcomingEvents: ChamberEvent[];
   export let pastEvents: ChamberEvent[];
@@ -201,6 +202,7 @@
             });
             break;
           case ActivityTypes.EVENT:
+            throw new Error('Welp, everything is broken.');
             await rest.post(`events/mark-attendance`, {
               memberId: $user?.id,
               eventId: selectedEvent.id,
@@ -231,7 +233,7 @@
         });
         onToggleEventForm();
       } catch (e) {
-        console.error(e);
+        logCaughtError(e);
       } finally {
         submitting = false;
       }
