@@ -1,5 +1,6 @@
 <script context="module">
   import { BASE_URL } from '../modules/constants';
+  import { getRandomExclam } from '../modules/helpers';
 
   export async function load({ fetch }) {
     try {
@@ -114,18 +115,20 @@
     contact: string,
     orgName: string
   ) {
+    const pts = ev.eventType[0].points;
+    const ptsStr = pts > 1 ? `${pts} points` : `1 point`;
     switch (activity) {
       case ActivityTypes.CALL_EMAIL:
-        return `Success! You earned ${
-          ev.eventType[0].points
-        } points for ${genCallEmailSuccessSubstring(
+        return `${getRandomExclam()} You earned ${ptsStr} for ${genCallEmailSuccessSubstring(
           subActivityType,
           contact
         )}.`;
       case ActivityTypes.DELIVERY:
-        return `Success! You earned ${ev.eventType[0].points} points for your delivery to ${orgName}.`;
+        return `${getRandomExclam()} You earned ${ptsStr} for your delivery to ${orgName}.`;
       case ActivityTypes.EVENT:
-        return `Success! You earned ${ev.eventType[0].points} points for attending ${ev.title}.`;
+        return `${getRandomExclam()} You earned ${ptsStr} for attending ${
+          ev.title
+        }.`;
     }
   }
 
@@ -222,7 +225,7 @@
             callee,
             org
           ),
-          timeout: 5000,
+          timeout: 5000000,
           clickable: true
           // action: onToggleEventForm
         });

@@ -185,3 +185,29 @@ export function validateEvent(ev: Partial<ChamberEvent>) {
   }
   return Promise.resolve();
 }
+
+const exclamations = [
+  'Alright!',
+  'Awesome!',
+  'Bam!',
+  'Boom!',
+  'Booyah!',
+  'Bravo!',
+  'Cool!',
+  'Excellent!',
+  'Good job!',
+  'Great!',
+  'Nice!',
+  'Right on!',
+  'Sweet!',
+  'Super!',
+  'Way to go!',
+  'Well done!',
+  'Woohoo!',
+  'Yay!',
+  'Yesss!'
+];
+
+export function getRandomExclam() {
+  return exclamations[Math.floor(Math.random() * exclamations.length)];
+}

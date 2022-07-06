@@ -23,7 +23,7 @@
       e.preventDefault();
       e.stopPropagation();
       dismissAlert(alert.id);
-    }}>&times;</button
+    }}><span class="fa fa-times" /></button
   >
 </div>
 
@@ -34,6 +34,7 @@
     background-color: #b4d3f2;
     border: 1px solid #a6c0da;
     color: #003e7b;
+    font-weight: 600;
     padding: 10px;
     border-radius: 4px;
     z-index: 6;
@@ -55,9 +56,13 @@
     }
 
     &.alert-success {
-      background-color: #d4edda;
-      border-color: #c3e6cb;
-      color: #155724;
+      background-color: var(--successGreen);
+      border-color: var(--successGreenDarker);
+      color: white;
+
+      .close-button {
+        color: white;
+      }
     }
 
     &.clickable {
@@ -67,13 +72,14 @@
     .close-button {
       background: transparent;
       border: none;
-      color: #003e7b;
       cursor: pointer;
-      font-size: 1.5rem;
-      line-height: 0;
       margin: 0;
       padding: 0;
       height: initial;
+
+      .fa {
+        margin: 0;
+      }
 
       &:focus {
         outline: none;

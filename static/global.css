@@ -151,6 +151,7 @@
   --footerTextColor: #405784;
   --activeLinkColor: white;
   --successGreen: rgb(33, 162, 93);
+  --successGreenDarker: rgb(24, 115, 66);
   --colorAttendedEvent: var(--successGreen);
   --brandPrimary: #012f65;
   --brandSecondary: #76a22f;
