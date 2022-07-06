@@ -47,7 +47,7 @@
     <div class="table-header-cell">Member</div>
     <div class="table-header-cell center">Events</div>
     <div class="table-header-cell center">Guests</div>
-    <div class="table-header-cell large-screen center">Total Points</div>
+    <div class="table-header-cell large-screen center">Points</div>
     <div class="table-header-cell small-screen center">Pts</div>
     <div class="table-header-cell large-screen center">More</div>
     <div class="table-header-cell small-screen center">

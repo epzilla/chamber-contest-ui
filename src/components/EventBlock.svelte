@@ -17,7 +17,7 @@
       <span class="underline-on-hover">{event.title}</span>
       <span class="fa fa-check-circle" />
     </h3>
-    <h5>
+    <h5 class="type-and-points-info">
       <span>{evType.type}</span>
       {#if !didAttend}
         <span> - {evType.points}</span>
@@ -58,13 +58,17 @@
 
       h5 {
         margin: 5px 0;
-      }
 
-      h5.att-notif {
-        margin: 10px 0;
+        &.type-and-points-info {
+          color: var(--colorMediumText);
+          font-weight: 400;
+        }
+
+        &.att-notif {
+          margin: 10px 0;
+        }
       }
     }
-
     &.attended {
       h3 {
         display: grid;

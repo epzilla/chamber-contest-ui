@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import { BASE_URL } from '../../modules/constants';
+  import { BASE_URL, SITE_TITLE } from '../../modules/constants';
   import { calculateTotalsForTimePeriod } from '../../modules/helpers';
   import { format } from 'date-fns';
   import ResultsTable from '../../components/ResultsTable.svelte';
@@ -86,7 +86,7 @@
   });
 </script>
 
-<h2>{timePeriod} Chamber Points Contest Results</h2>
+<h2>{timePeriod} {SITE_TITLE} Standings</h2>
 
 <ResultsTable {totals} {timePeriod} isCurrent />
 
