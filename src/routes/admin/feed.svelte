@@ -36,8 +36,8 @@
   }
 </script>
 
+<h3>Activity Feed</h3>
 <section class="activity-feed">
-  <h3>Activity Feed</h3>
   <h5><span class="indent">Activity</span><span>Logged at:</span></h5>
   <ul>
     {#each feed as feedEntry}
@@ -61,6 +61,11 @@
     overflow: hidden;
   }
 
+  h3 {
+    margin-top: 0;
+    margin-bottom: 1rem;
+  }
+
   h5 {
     display: grid;
     grid-template-columns: 1fr 135px;
@@ -70,11 +75,15 @@
     .indent {
       padding-left: 10px;
     }
+
+    @media screen and (max-width: 600px) {
+      grid-template-columns: 1fr 120px;
+    }
   }
 
   ul {
     width: 100%;
-    max-height: calc(100% - 80px);
+    max-height: calc(100% - 40px);
     overflow-y: scroll;
     margin-top: 0;
   }
