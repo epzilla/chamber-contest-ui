@@ -20,6 +20,10 @@
     <span class="fa fa-list" />
     <span>Edit Event Types</span>
   </a>
+  <a href="/admin/feed" class="style-as-button">
+    <span class="fa fa-feed" />
+    <span>View Activity Feed</span>
+  </a>
 </section>
 
 <style lang="scss">

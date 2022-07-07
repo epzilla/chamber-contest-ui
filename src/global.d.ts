@@ -89,3 +89,14 @@ type ValidMonthEntry = {
   month: number;
   year: number;
 };
+
+type FeedEntry = {
+  name: string;
+  names: string[];
+  guests: number;
+  notes: string;
+  type: string;
+  title: string;
+  start_time: string;
+  timestamp: string;
+};

@@ -17,7 +17,9 @@
 
   function isActive(href, v) {
     if (
-      (v.includes('edit-event') || v.includes('edit-members')) &&
+      (v.includes('edit-event') ||
+        v.includes('edit-members') ||
+        v.includes('feed')) &&
       href.includes('/admin')
     ) {
       return true;
