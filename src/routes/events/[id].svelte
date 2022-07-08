@@ -124,13 +124,15 @@
 {#if event}
   <div class="main single-event-details">
     <h2 class="align-center primary-text">{event.title}</h2>
-    <p>{event.address}</p>
+    <p>{@html event.address || ''}</p>
     {#if event.startTime}
       <p><DateTime date={event.startTime} /></p>
     {/if}
     {#if event.notes}
-      <p>{event.notes}</p>
-    {/if}
+      <p>
+        {@html event.notes.replace(/\n/g, '<br>')}
+      </p>
+      <p />{/if}
 
     {#if !isFutureEvent}
       <h4>Chamber Attendees:</h4>
