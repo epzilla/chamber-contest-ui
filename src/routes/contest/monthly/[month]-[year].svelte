@@ -3,10 +3,10 @@
   import { format } from 'date-fns';
   import { calculateTotalsForTimePeriod } from '../../../modules/helpers';
 
-  export async function load({ fetch, page }) {
+  export async function load({ fetch, params }) {
     try {
-      const month = await page.params.month;
-      const year = await page.params.year;
+      const month = await params.month;
+      const year = await params.year;
       const now = new Date();
       const date = new Date();
       date.setFullYear(year, month - 1, 1);

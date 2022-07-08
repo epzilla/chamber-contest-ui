@@ -1,7 +1,7 @@
 <script context="module">
   import { BASE_URL } from '../../modules/constants';
 
-  export async function load({ fetch, page }) {
+  export async function load({ fetch }) {
     try {
       const typesResult = await fetch(`${BASE_URL}event-types`);
       const typeList = await typesResult.json();

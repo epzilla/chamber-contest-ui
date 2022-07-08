@@ -9,7 +9,7 @@
   $: backdropClass = `nav-modal-backdrop${menu ? ' show' : ''}`;
   $: shownRoutes = ROUTES;
 
-  page.subscribe(({ path }) => (view = path));
+  page.subscribe(({ url }) => (view = url.pathname));
 
   function toggleMenu() {
     menu = !menu;

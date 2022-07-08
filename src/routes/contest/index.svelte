@@ -4,7 +4,7 @@
   import { format } from 'date-fns';
   import ResultsTable from '../../components/ResultsTable.svelte';
 
-  export async function load({ fetch, page }) {
+  export async function load({ fetch }) {
     try {
       const now = new Date();
 

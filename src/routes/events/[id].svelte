@@ -1,9 +1,9 @@
 <script context="module">
   import { BASE_URL } from '../../modules/constants';
 
-  export async function load({ fetch, page }) {
+  export async function load({ fetch, params }) {
     try {
-      const id = await page.params.id;
+      const id = await params.id;
       const eventResult = await fetch(`${BASE_URL}events/${id}`);
       const memberListResult = await fetch(`${BASE_URL}members`);
       const memberList = await memberListResult.json();
