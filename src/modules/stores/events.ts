@@ -13,6 +13,7 @@ type myEventsRsp = {
 export const pastEvents = writable<ChamberEvent[]>([]);
 export const myEvents = writable<ChamberEvent[]>([]);
 export const myUnattendedEvents = writable<ChamberEvent[]>([]);
+export const myUnattendedPastEvents = writable<ChamberEvent[]>([]);
 
 rest.get('past-events').then((events: ChamberEvent[]) => {
   events.sort(sortEventsByTime);
@@ -30,4 +31,12 @@ user.subscribe(u => {
         myUnattendedEvents.set(unattended);
       });
   }
+});
+
+pastEvents.subscribe(past => {
+  myUnattendedEvents.subscribe(unattended => {
+    myUnattendedPastEvents.set(
+      past.filter(e => !!unattended.find(ue => ue.id === e.id))
+    );
+  });
 });

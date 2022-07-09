@@ -2,6 +2,7 @@
   import {
     myEvents,
     myUnattendedEvents,
+    myUnattendedPastEvents,
     pastEvents
   } from '../modules/stores/events';
   import Svelecte from 'svelecte';
@@ -9,7 +10,7 @@
   export let selected: ChamberEvent | null = null;
   export let useAttended = false;
   export let useUnattended = false;
-  export let hideAdHoc = false;
+  export let onlyPastEvents = false;
   export let onSelect: ((event: ChamberEvent) => void) | null = null;
 
   function labelRenderer(option: ChamberEvent) {
@@ -22,16 +23,29 @@
   $: {
     onSelect(selected);
   }
+
+  function getOptions() {
+    if (useAttended) {
+      return $myEvents;
+    }
+
+    if (useUnattended) {
+      if (onlyPastEvents) {
+        return $myUnattendedPastEvents;
+      }
+      return $myUnattendedEvents;
+    }
+
+    if (onlyPastEvents) {
+      return $pastEvents;
+    }
+  }
 </script>
 
 {#if $pastEvents.length > 0}
   <div style="width: 350px; max-width: 85vw !important; display: inline-block;">
     <Svelecte
-      options={useAttended
-        ? $myEvents
-        : useUnattended
-        ? $myUnattendedEvents
-        : $pastEvents}
+      options={getOptions()}
       bind:value={selected}
       valueField="id"
       valueAsObject

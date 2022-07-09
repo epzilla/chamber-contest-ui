@@ -357,6 +357,7 @@
               <EventSelector
                 bind:selected={selectedEvent}
                 useUnattended
+                onlyPastEvents
                 onSelect={e => {
                   formIsValid = addEventFormIsValid();
                 }}
