@@ -8,7 +8,8 @@ const config = {
   preprocess: preprocess(),
 
   kit: {
-    adapter: vercel()
+    adapter: vercel(),
+    version: '0.0.1'
   }
 };
 
