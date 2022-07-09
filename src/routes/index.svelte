@@ -226,9 +226,8 @@
             callee,
             org
           ),
-          timeout: 5000000,
+          timeout: 5000,
           clickable: true
-          // action: onToggleEventForm
         });
         onToggleEventForm();
       } catch (e) {
