@@ -1,17 +1,17 @@
 {
-    "short_name": "Chamber Contest",
-    "name": "Madison Chamber Contest",
-    "start_url": "/",
-    "icons": [
-        {
-            "src": "logo_512.png",
-            "type": "image/png",
-            "sizes": "512x512"
-        }
-    ],
-    "background_color": "#f4fcff",
-    "display": "standalone",
-    "scope": "/",
-    "theme_color": "#405784",
-    "description": "App for Madison Chamber of Commerce ambassadors to track their activities to earn points."
+  "short_name": "Chamber Contest",
+  "name": "Madison Chamber Contest",
+  "start_url": "/",
+  "icons": [
+    {
+      "src": "logo_512.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    }
+  ],
+  "background_color": "#44b2b5",
+  "display": "standalone",
+  "scope": "/",
+  "theme_color": "#44b2b5",
+  "description": "App for Madison Chamber of Commerce ambassadors to track their activities to earn points."
 }
