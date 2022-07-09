@@ -1,4 +1,4 @@
-<script context="module">
+<script context="module" lang="ts">
   import { BASE_URL, SITE_TITLE } from '../../../modules/constants';
   import { format } from 'date-fns';
   import { calculateTotalsForTimePeriod } from '../../../modules/helpers';
@@ -14,11 +14,16 @@
       const json = await rsp.json();
       const totals = calculateTotalsForTimePeriod(json);
       const timePeriod = format(date, 'MMMM Y');
+      const monthsRsp = await fetch(`${BASE_URL}valid-months`);
+      const validMonths: ValidMonthEntry[] = await monthsRsp.json();
+      const activeMonth: ValidMonthEntry = { month, year };
       return {
         props: {
           timePeriod,
           isCurrent: now.getMonth() === month - 1 && now.getFullYear() === year,
-          totals
+          totals,
+          validMonths,
+          activeMonth
         }
       };
     } catch (err) {
@@ -31,13 +36,18 @@
 </script>
 
 <script lang="ts">
+  import MonthlyTotalsNav from '../../../components/MonthlyTotalsNav.svelte';
   import ResultsTable from '../../../components/ResultsTable.svelte';
 
   export let timePeriod: string;
   export let totals: PointsTotalWithEvents[];
   export let isCurrent: boolean;
+  export let validMonths: ValidMonthEntry[];
+  export let activeMonth: ValidMonthEntry;
 </script>
 
 <h2>{timePeriod} {SITE_TITLE} Standings</h2>
 
 <ResultsTable {totals} {timePeriod} {isCurrent} />
+
+<MonthlyTotalsNav {validMonths} {activeMonth} />

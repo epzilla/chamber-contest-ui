@@ -1,7 +1,6 @@
 <script context="module" lang="ts">
   import { BASE_URL, SITE_TITLE } from '../../modules/constants';
   import { calculateTotalsForTimePeriod } from '../../modules/helpers';
-  import { format } from 'date-fns';
   import ResultsTable from '../../components/ResultsTable.svelte';
 
   export async function load({ fetch }) {
@@ -34,7 +33,7 @@
 </script>
 
 <script lang="ts">
-  import { getMonth } from '../../modules/helpers';
+  import MonthlyTotalsNav from '../../components/MonthlyTotalsNav.svelte';
   import { attendanceUpdates } from '../../modules/websockets';
   export let timePeriod: string;
   export let currentYear: number;
@@ -90,11 +89,4 @@
 
 <ResultsTable {totals} {timePeriod} isCurrent />
 
-<hr />
-
-<h4>View Monthly Totals:</h4>
-{#each validMonths as { month, year }}
-  <a href={`/contest/monthly/${month}-${year}`} class="style-as-button"
-    ><h4>{getMonth(month)} {year}</h4></a
-  >
-{/each}
+<MonthlyTotalsNav {validMonths} />
