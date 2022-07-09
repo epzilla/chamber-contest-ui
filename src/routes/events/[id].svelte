@@ -55,7 +55,7 @@
   let futureEventInterval;
   let guestNames = [];
 
-  $: isFutureEvent = new Date(event.startTime) >= new Date();
+  $: isFutureEvent = event ? new Date(event.startTime) >= new Date() : false;
 
   $: userDidAttend = liveAttendeeList.find(a => a.id === $user?.id);
 
