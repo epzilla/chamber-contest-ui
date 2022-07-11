@@ -20,7 +20,9 @@
       return {
         props: {
           timePeriod,
-          isCurrent: now.getMonth() === month - 1 && now.getFullYear() === year,
+          isCurrent:
+            now.getMonth() === parseInt(month) - 1 &&
+            now.getFullYear() === parseInt(year),
           totals,
           validMonths,
           activeMonth
