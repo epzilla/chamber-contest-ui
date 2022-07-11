@@ -211,3 +211,10 @@ const exclamations = [
 export function getRandomExclam() {
   return exclamations[Math.floor(Math.random() * exclamations.length)];
 }
+
+export function scrubDateTime(dateTime: string) {
+  if (dateTime.endsWith('Z')) {
+    return dateTime.substring(0, dateTime.length - 1);
+  }
+  return dateTime;
+}

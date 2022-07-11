@@ -1,6 +1,6 @@
 <script context="module">
   import { BASE_URL } from '../modules/constants';
-  import { getRandomExclam } from '../modules/helpers';
+  import { getRandomExclam, scrubDateTime } from '../modules/helpers';
 
   export async function load({ fetch }) {
     try {
@@ -77,7 +77,7 @@
   function genEndTimeFromStartTime() {
     const date = new Date(startTime);
     date.setMinutes(date.getMinutes() + 30);
-    return date.toISOString();
+    return scrubDateTime(date.toISOString());
   }
 
   function genDeliveryTitle() {

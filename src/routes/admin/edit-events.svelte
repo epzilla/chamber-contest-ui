@@ -1,5 +1,5 @@
 <script context="module" lang="ts">
-  import { sortEventsByTime } from '../../modules/helpers';
+  import { scrubDateTime, sortEventsByTime } from '../../modules/helpers';
   import { BASE_URL } from '../../modules/constants';
 
   export async function load({ fetch, context }) {
@@ -63,8 +63,8 @@
     isAddingEvent = {
       title: '',
       address: '',
-      startTime: new Date().toISOString(),
-      endTime: new Date().toISOString(),
+      startTime: scrubDateTime(new Date().toISOString()),
+      endTime: scrubDateTime(new Date().toISOString()),
       notes: '',
       isAdHoc: false
     };

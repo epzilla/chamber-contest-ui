@@ -1,7 +1,11 @@
 <script lang="ts">
   import { isBefore } from 'date-fns';
   import { onMount } from 'svelte';
-  import { toDatetimeLocal, validateEvent } from '../modules/helpers';
+  import {
+    scrubDateTime,
+    toDatetimeLocal,
+    validateEvent
+  } from '../modules/helpers';
   import rest from '../modules/rest';
   import { user } from '../modules/stores';
   import EventTypeSelector from './EventTypeSelector.svelte';
@@ -16,8 +20,8 @@
   let newEvent: Partial<ChamberEvent> = {
     title: '',
     address: '',
-    startTime: new Date().toISOString(),
-    endTime: new Date().toISOString(),
+    startTime: scrubDateTime(new Date().toISOString()),
+    endTime: scrubDateTime(new Date().toISOString()),
     notes: '',
     isAdHoc: false
   };
@@ -51,8 +55,8 @@
   async function onSubmit() {
     isSubmitting = true;
     try {
-      const endTime = new Date(localEndTime).toISOString();
-      const startTime = new Date(localStartTime).toISOString();
+      const endTime = scrubDateTime(new Date(localEndTime).toISOString());
+      const startTime = scrubDateTime(new Date(localStartTime).toISOString());
       const ev = {
         ...editingEvent,
         eventType: eventType ? [eventType] : null,
