@@ -33,7 +33,9 @@
 </script>
 
 <header class="header">
-  <button class="btn menu-btn" on:click={toggleMenu}>Menu</button>
+  {#if !view.includes('/welcome')}
+    <button class="btn menu-btn" on:click={toggleMenu}>Menu</button>
+  {/if}
   <a href={$user ? '/' : '#'} tabindex="0"><h1>{SITE_TITLE}</h1></a>
   <nav class={menu ? 'show' : 'hide'}>
     {#if $user}
