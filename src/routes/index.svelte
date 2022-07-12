@@ -176,7 +176,7 @@
               email,
               eventType: $eventTypes.find(e => e.id == 6),
               dateEntered: new Date(),
-              startTime,
+              startTime: new Date(startTime),
               endTime: genEndTimeFromStartTime(),
               title: genCallEmailTitle(),
               address: org,
