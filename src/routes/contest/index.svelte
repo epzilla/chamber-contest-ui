@@ -41,11 +41,9 @@
   export let totals: PointsTotalWithEvents[];
   export let validMonths: ValidMonthEntry[];
 
-  function isThisMonth(timeString: string) {
+  function isThisYear(timeString: string) {
     const time = new Date(timeString);
-    return (
-      time.getFullYear() === currentYear && time.getMonth() + 1 === currentMonth
-    );
+    return time.getFullYear() === currentYear;
   }
 
   function recalculate(newTotals: PointsTotalWithEvents[]) {
@@ -67,7 +65,7 @@
   }
 
   attendanceUpdates.subscribe(({ type, event }) => {
-    if (isThisMonth(event.startTime)) {
+    if (isThisYear(event.startTime)) {
       let i = totals.findIndex(t => t.memberId === event.memberId);
       if (i !== -1) {
         if (type === 'add') {

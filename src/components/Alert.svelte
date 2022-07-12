@@ -3,11 +3,27 @@
   import { dismissAlert } from '../modules/stores';
 
   export let alert: Alert;
+
+  function getAnimationIn() {
+    if (alert.type === 'pointsUpdate') {
+      return { x: 200, duration: 200 };
+    }
+
+    return { y: 200, duration: 200 };
+  }
+
+  function getAnimationOut() {
+    if (alert.type === 'pointsUpdate') {
+      return { x: 200, duration: 500 };
+    }
+
+    return { y: 200, duration: 500 };
+  }
 </script>
 
 <div
-  in:fly={{ y: 200, duration: 200 }}
-  out:fly={{ y: 200, duration: 500 }}
+  in:fly={getAnimationIn()}
+  out:fly={getAnimationOut()}
   class={`alert alert-${alert.type}${alert.clickable ? ' clickable' : ''}`}
   on:click={() => {
     if (alert.action) {

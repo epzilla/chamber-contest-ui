@@ -144,6 +144,7 @@
   --secondary: white;
   --tertiary: #44b2b5; /* Used in cases where secondary is a light color */
   --accentColor: #ff2882; /* Used as a pop of flashy color */
+  --accentColorDarker: #a51a54;
   --primaryBtnBg: #44b2b5;
   --primaryBtnText: white;
   --secondaryBtnBg: #405784;

@@ -1,4 +1,5 @@
 <script lang="ts">
+  import MiniAlerts from '../components/MiniAlerts.svelte';
   import FixedAlerts from '../components/FixedAlerts.svelte';
   import Nav from '../components/Nav.svelte';
   import SocketSub from '../components/SocketSub.svelte';
@@ -14,6 +15,7 @@
 <SocketSub>
   <Nav />
   <main>
+    <MiniAlerts />
     <slot />
     <FixedAlerts />
   </main>

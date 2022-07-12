@@ -10,7 +10,7 @@ const config = {
   kit: {
     adapter: vercel(),
     version: {
-      name: '0.0.6',
+      name: '0.0.7',
       pollInterval: 60 * 60 * 1000
     }
   }

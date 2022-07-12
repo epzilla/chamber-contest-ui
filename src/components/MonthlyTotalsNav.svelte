@@ -23,7 +23,6 @@
 
   export let validMonths: ValidMonthEntry[];
   export let activeMonth: ValidMonthEntry = null;
-  console.log(activeMonth);
 </script>
 
 <hr />
