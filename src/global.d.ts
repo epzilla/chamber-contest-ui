@@ -78,7 +78,7 @@ type EventsByMemberRsp = {
 
 type Alert = {
   id?: string;
-  type: string;
+  type: 'success' | 'error' | 'warning' | 'info' | 'pointsUpdate';
   msg: string;
   action?: () => void;
   clickable?: boolean;

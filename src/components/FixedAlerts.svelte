@@ -1,10 +1,10 @@
 <script>
-  import { alerts } from '../modules/stores';
+  import { fixedAlerts } from '../modules/stores';
   import Alert from './Alert.svelte';
 </script>
 
 <div class="fixed-alerts">
-  {#each $alerts as al}
+  {#each $fixedAlerts as al}
     <Alert alert={al} />
   {/each}
 </div>
