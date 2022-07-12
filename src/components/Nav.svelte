@@ -33,9 +33,7 @@
 </script>
 
 <header class="header">
-  {#if $user}
-    <button class="btn menu-btn" on:click={toggleMenu}>Menu</button>
-  {/if}
+  <button class="btn menu-btn" on:click={toggleMenu}>Menu</button>
   <a href={$user ? '/' : '#'} tabindex="0"><h1>{SITE_TITLE}</h1></a>
   <nav class={menu ? 'show' : 'hide'}>
     {#if $user}
