@@ -4,6 +4,7 @@
   import Nav from '../components/Nav.svelte';
   import SocketSub from '../components/SocketSub.svelte';
   import '../modules/errors';
+  import EditAttendanceModal from '../components/EditAttendanceModal.svelte';
 
   if (typeof window !== 'undefined' && window.location.href === '/welcome') {
     if (!localStorage.getItem('user')) {
@@ -18,5 +19,6 @@
     <MiniAlerts />
     <slot />
     <FixedAlerts />
+    <EditAttendanceModal />
   </main>
 </SocketSub>

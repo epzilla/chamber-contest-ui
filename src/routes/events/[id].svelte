@@ -31,13 +31,13 @@
   import PopModal from '../../components/PopModal.svelte';
   import Stepper from '../../components/Stepper.svelte';
   import Switch from '../../components/Switch.svelte';
-  import { user } from '../../modules/stores';
+  import { user, userAttendedEvents } from '../../modules/stores';
   import { getFirstName } from '../../modules/helpers';
   import rest from '../../modules/rest';
   import AttendanceNotice from '../../components/AttendanceNotice.svelte';
 
-  export let event: ChamberEvent;
-  export let attendees: Member[];
+  export let event: AttendedChamberEvent;
+  export let attendees: Attendee[];
   export let memberList: Member[];
 
   let liveMemberList = [...memberList];
@@ -49,15 +49,17 @@
   let showAttendanceForm = false;
   let submitting = false;
   let listInitted = false;
-  $: selectedAttendee = $user?.id ?? null;
-  let guestCount = 0;
   let addNames = false;
   let futureEventInterval;
   let guestNames = [];
 
+  $: selectedAttendee = $user?.id ?? null;
   $: isFutureEvent = event ? new Date(event.startTime) >= new Date() : false;
-
   $: userDidAttend = liveAttendeeList.find(a => a.id === $user?.id);
+  $: guestCount = userDidAttend?.guests ?? 0;
+  $: userAttendedEvent = userDidAttend
+    ? { ...event, names: userDidAttend.names, guests: userDidAttend.guests }
+    : null;
 
   $: {
     if (liveMemberList?.length && liveAttendeeList && event && !listInitted) {
@@ -73,6 +75,26 @@
       }, 10000);
     }
   }
+
+  userAttendedEvents.subscribe(evs => {
+    const updatedDidAttend = evs.find(e => e.id === event.id);
+    if (updatedDidAttend) {
+      let myUser = liveMemberList.find(m => m.id === $user?.id);
+      liveAttendeeList = [
+        ...liveAttendeeList.filter(a => a.id !== $user?.id),
+        {
+          id: myUser?.id,
+          name: myUser?.name,
+          guests: updatedDidAttend.guests,
+          names: updatedDidAttend.names
+        }
+      ];
+    } else if (!updatedDidAttend) {
+      liveAttendeeList = liveAttendeeList.filter(
+        a => a.id !== userDidAttend?.id
+      );
+    }
+  });
 
   onDestroy(() => {
     if (futureEventInterval) {
@@ -92,19 +114,20 @@
       });
       showAttendanceForm = false;
       const m = memberList.find(m => m.id === selectedAttendee);
-      liveAttendeeList = [...liveAttendeeList, m];
+      liveAttendeeList = [
+        ...liveAttendeeList,
+        { ...m, guests: guestCount, names: guestNames }
+      ];
       selectedAttendee = null;
       listInitted = false;
+      let updatedEvents = [...$userAttendedEvents];
+      updatedEvents.push(event);
+      userAttendedEvents.set(updatedEvents);
     } catch (e) {
       debugger;
     } finally {
       submitting = false;
     }
-  }
-
-  function onSelectChange(e: Event) {
-    const select = e.target as HTMLSelectElement;
-    selectedAttendee = parseInt(select.value);
   }
 
   function onAttendanceFormToggle() {
@@ -148,13 +171,12 @@
       {/each}
 
       {#if userDidAttend}
-        <AttendanceNotice {event} />
+        <AttendanceNotice event={userAttendedEvent} />
+      {:else}
+        <button on:click={() => (showAttendanceForm = true)}
+          >Mark Your Attendance</button
+        >
       {/if}
-      <button on:click={() => (showAttendanceForm = true)}
-        >{userDidAttend
-          ? 'Edit Your Attendance'
-          : 'Mark Your Attendance'}</button
-      >
       <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
         <div class="pop-modal-form">
           <h3>

@@ -24,10 +24,10 @@
         <span>{evType.points > 1 ? 'points' : 'point'}</span>
       {/if}
     </h5>
-    {#if didAttend}
-      <AttendanceNotice {event} />
-    {/if}
     <p class="event-date"><DateTime date={event.startTime} /></p>
+    {#if didAttend}
+      <AttendanceNotice event={didAttend} />
+    {/if}
     {#if isUpcomingEvent}
       <AddToCalendarButton {event} />
     {/if}

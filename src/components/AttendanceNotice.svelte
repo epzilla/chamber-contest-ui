@@ -1,5 +1,7 @@
 <script lang="ts">
-  export let event: ChamberEvent;
+  import { editingAttendedEvent } from '../modules/stores/users';
+  export let event: AttendedChamberEvent;
+
   $: evType = event?.eventType[0];
 
   function getUrlForContest() {
@@ -14,17 +16,28 @@
       return `/contest/monthly/${start.getMonth() + 1}-${start.getFullYear()}`;
     }
   }
+
+  function onEdit() {
+    editingAttendedEvent.set(event);
+  }
 </script>
 
 <a class="attendance-highlight" href={getUrlForContest()}
   ><span>
-    Your attendance earned you {evType.points}
-    {evType.points > 1 ? 'points' : 'point'}!
+    You earned {evType.points}
+    {evType.points > 1 ? 'points' : 'point'} for attending!
   </span>
   <span class="fa fa-circle-arrow-right" />
 </a>
 
+<button on:click|preventDefault|stopPropagation={onEdit}>
+  <span class="fa fa-pen-to-square" />
+  <span>Edit Your Attendance</span>
+</button>
+
 <style lang="scss">
+  @import '../styles/modal-form.scss';
+
   a.attendance-highlight {
     padding: 8px;
     color: white;

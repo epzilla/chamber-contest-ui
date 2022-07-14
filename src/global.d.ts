@@ -18,6 +18,13 @@ type Member = {
   isActive?: boolean;
 };
 
+type Attendee = {
+  id: number;
+  name: string;
+  guests: number;
+  names: string[];
+};
+
 type ChamberEvent = {
   id: number;
   eventType: EventType[];
@@ -29,6 +36,11 @@ type ChamberEvent = {
   notes?: string;
   isAdHoc?: boolean;
   addToCal?: boolean;
+};
+
+type AttendedChamberEvent = ChamberEvent & {
+  guests: number;
+  names: string[];
 };
 
 type EventAttendance = {
@@ -70,7 +82,7 @@ type TimePeriodTotalRsp = {
 };
 
 type EventsByMemberRsp = {
-  attended: ChamberEvent[];
+  attended: AttendedChamberEvent[];
   attendedAdHoc: ChamberEvent[];
   attendedNonAdHoc: ChamberEvent[];
   unattended: ChamberEvent[];
@@ -99,4 +111,19 @@ type FeedEntry = {
   title: string;
   start_time: string;
   timestamp: string;
+};
+
+type MemberStatEntry = {
+  memberId: number;
+  name: string;
+  guests: string;
+  count: number;
+  total: string;
+  names: string[];
+  rank: number;
+};
+
+type MemberActivityRsp = {
+  events: ChamberEvent[];
+  stats: MemberStatEntry;
 };

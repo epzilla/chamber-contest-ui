@@ -44,4 +44,5 @@ if (userObj) {
 }
 
 export const user = writable<Member | null>(userObj);
-export const userAttendedEvents = writable<ChamberEvent[]>([]);
+export const userAttendedEvents = writable<AttendedChamberEvent[]>([]);
+export const editingAttendedEvent = writable<AttendedChamberEvent | null>(null);
