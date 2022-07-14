@@ -33,6 +33,6 @@
     gap: 8px;
     align-items: center;
     width: 100%;
-    max-width: 250px;
+    max-width: 300px;
   }
 </style>

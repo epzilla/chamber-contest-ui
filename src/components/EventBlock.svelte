@@ -18,7 +18,7 @@
       <span class="fa fa-check-circle" />
     </h3>
     <h5 class="type-and-points-info">
-      <span>{evType.type}</span>
+      <span>{evType.label}</span>
       {#if !didAttend}
         <span> - {evType.points}</span>
         <span>{evType.points > 1 ? 'points' : 'point'}</span>

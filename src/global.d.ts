@@ -7,7 +7,9 @@ type KVP = {
 type EventType = {
   id: number;
   type: string;
+  label: string;
   points: number;
+  isAdHoc: boolean;
 };
 
 type Member = {

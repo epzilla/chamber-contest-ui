@@ -46,7 +46,8 @@
   let activityOptions: KVP[] = [
     { key: ActivityTypes.CALL_EMAIL, value: 'I called/emailed someone' },
     { key: ActivityTypes.DELIVERY, value: 'I made a delivery' },
-    { key: ActivityTypes.EVENT, value: 'I attended an event' }
+    { key: ActivityTypes.EVENT, value: 'I attended an event' },
+    { key: ActivityTypes.OTHER, value: 'Something else (specify below)' }
   ];
   let subActivityOptions: KVP[] = [
     { key: SubActivityTypes.CALL, value: 'Call' },
@@ -68,6 +69,8 @@
   let callee = '';
   let phone = '';
   let email = '';
+  let otherActivity = '';
+  let otherActivityPoints = 1;
   let now = new Date();
   now.setSeconds(0);
   now.setMilliseconds(0);
@@ -210,6 +213,24 @@
               org: ''
             });
             break;
+          case ActivityTypes.OTHER:
+            selectedEvent = await rest.post(`events/ad-hoc`, {
+              memberId: $user?.id,
+              guestNames: [],
+              guestCount: 0,
+              eventType: $eventTypes.find(e => e.id == 7),
+              dateEntered: new Date(),
+              startTime,
+              endTime: genEndTimeFromStartTime(),
+              title: otherActivity,
+              address: '',
+              notes: '',
+              org: '',
+              isAdHoc: true,
+              isNewEventType: true,
+              points: otherActivityPoints
+            });
+            break;
         }
         myEvents.update(current => {
           return [...current, selectedEvent];
@@ -254,6 +275,8 @@
         return !!org && !!deliveryNotes;
       case ActivityTypes.EVENT:
         return !!selectedEvent;
+      case ActivityTypes.OTHER:
+        return !!otherActivity;
     }
   }
 
@@ -497,6 +520,37 @@
                 bind:value={deliveryNotes}
                 name="delivery-desc"
                 id="delivery-desc"
+              />
+            </div>
+          </div>
+        {:else if chosenActivity === ActivityTypes.OTHER}
+          <div class="other-actiivity-form">
+            <div class="form-group">
+              <label for="other-activity-desc">Describe what you did:</label>
+              <input
+                type="text"
+                placeholder="Describe your activity"
+                bind:value={otherActivity}
+                name="other-activity-desc"
+                id="other-activity-desc"
+              />
+            </div>
+            <div class="form-group">
+              <label for="start-time">When?</label>
+              <input
+                type="datetime-local"
+                bind:value={startTime}
+                name="start-time"
+                id="start-time"
+                step="300"
+              />
+            </div>
+            <div class="form-group">
+              <label for="start-time">Point Value?</label>
+              <Stepper
+                min={1}
+                value={otherActivityPoints}
+                onChange={num => (otherActivityPoints = num)}
               />
             </div>
           </div>

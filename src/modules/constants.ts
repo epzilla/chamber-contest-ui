@@ -20,7 +20,8 @@ export enum Msg {
 export enum ActivityTypes {
   CALL_EMAIL = 'CALL_EMAIL',
   DELIVERY = 'DELIVERY',
-  EVENT = 'EVENT'
+  EVENT = 'EVENT',
+  OTHER = 'OTHER'
 }
 
 export enum SubActivityTypes {

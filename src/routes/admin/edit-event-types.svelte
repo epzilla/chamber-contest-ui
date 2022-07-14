@@ -20,12 +20,10 @@
 </script>
 
 <script lang="ts">
-  import { onDestroy, onMount } from 'svelte';
   import rest from '../../modules/rest';
 
   export let typeList: EventType[];
 
-  let keyListener;
   let hasChanges = false;
   let isAdding = false;
   let editableCells = [];
@@ -89,7 +87,9 @@
         newType = {
           id: addedData[0],
           type: addedData[1],
-          points: addedData[2]
+          label: addedData[1],
+          points: addedData[2],
+          isAdHoc: false
         };
         typeList = typeList.concat(newType);
       } else {
@@ -130,12 +130,15 @@
       if (evType) {
         if (evType.type != data[rowIndex][1]) {
           evType.type = data[rowIndex][1] as string;
+          evType.label = data[rowIndex][1] as string;
           await rest.put(`event-types/${evType.id}`, evType);
         }
       } else {
-        const newType = {
+        const newType: EventType = {
           id: parseInt(data[rowIndex][0] as unknown as string),
           type: data[rowIndex][1] as string,
+          label: data[rowIndex][1] as string,
+          isAdHoc: false,
           points: parseInt(data[rowIndex][2] as unknown as string)
         };
         await rest.post(`event-types`, newType);
