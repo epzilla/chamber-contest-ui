@@ -83,10 +83,6 @@
     return date.toISOString();
   }
 
-  function genDeliveryTitle() {
-    return `Delivered to ${org}: ${deliveryNotes}`;
-  }
-
   function genCallEmailTitle() {
     switch (subActivity) {
       case SubActivityTypes.CALL:
@@ -197,7 +193,7 @@
               dateEntered: new Date(),
               startTime,
               endTime: genEndTimeFromStartTime(),
-              title: genDeliveryTitle(),
+              title: 'MCC Business Delivery',
               address: org,
               org,
               notes: deliveryNotes,
