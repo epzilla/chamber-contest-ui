@@ -4,7 +4,6 @@
   export let event: AttendedChamberEvent;
 
   $: evType = event?.eventType[0];
-  const { submissionsDisabled } = $configData;
 
   function getUrlForContest() {
     const now = new Date();
@@ -32,7 +31,7 @@
   <span class="fa fa-circle-arrow-right" />
 </a>
 
-{#if !submissionsDisabled}
+{#if !$configData.submissionsDisabled}
   <button on:click|preventDefault|stopPropagation={onEdit}>
     <span class="fa fa-pen-to-square" />
     <span>Edit Your Attendance</span>

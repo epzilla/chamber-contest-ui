@@ -44,8 +44,6 @@
   export let upcomingEvents: ChamberEvent[];
   export let pastEvents: ChamberEvent[];
 
-  const { submissionsDisabled, submissionsDeadline } = $configData;
-
   let activityOptions: KVP[] = [
     { key: ActivityTypes.CALL_EMAIL, value: 'I called/emailed someone' },
     { key: ActivityTypes.DELIVERY, value: 'I made a delivery' },
@@ -343,17 +341,17 @@
     {/if}
   </div>
   <div class="float-wrapper">
-    {#if submissionsDisabled}
+    {#if $configData.submissionsDisabled}
       <p class="deadline-notice">
-        Note: the deadline for submissions has ended {submissionsDeadline
-          ? `as of ${submissionsDeadline}`
+        Note: the deadline for submissions has ended {$configData.submissionsDeadline
+          ? `as of ${$configData.submissionsDeadline}`
           : ''}
       </p>
     {/if}
     <button
       class="ad-hoc-event-btn primary"
       on:click={onToggleEventForm}
-      disabled={submissionsDisabled}
+      disabled={$configData.submissionsDisabled}
     >
       <span class="fa fa-circle-plus" />
       <span>Log an Activity</span></button
