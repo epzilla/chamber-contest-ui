@@ -341,11 +341,17 @@
     {/if}
   </div>
   <div class="float-wrapper">
-    {#if $configData.submissionsDisabled}
+    {#if $configData.submissionsDeadline}
       <p class="deadline-notice">
-        Note: the deadline for submissions has ended {$configData.submissionsDeadline
-          ? `as of ${$configData.submissionsDeadline}`
-          : ''}
+        {#if $configData.submissionsDisabled}
+          <span>
+            Note: the deadline for submissions has ended as of {$configData.submissionsDeadline}
+          </span>
+        {:else}
+          <span>
+            Reminder: the deadline for submissions is {$configData.submissionsDeadline}
+          </span>
+        {/if}
       </p>
     {/if}
     <button
@@ -615,7 +621,8 @@
   .deadline-notice {
     margin: 0;
     height: 40px;
-    padding-right: 1rem;
+    font-size: 10pt;
+    padding-right: 0.5rem;
     font-style: italic;
     color: #888;
     display: flex;
