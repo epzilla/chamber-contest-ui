@@ -39,9 +39,12 @@
   import { eventTypes } from '../modules/stores/eventTypes';
   import { addAlert } from '../modules/stores/alerts';
   import { logCaughtError } from '../modules/errors';
+  import { configData } from '../modules/stores';
 
   export let upcomingEvents: ChamberEvent[];
   export let pastEvents: ChamberEvent[];
+
+  const { submissionsDisabled, submissionsDeadline } = $configData;
 
   let activityOptions: KVP[] = [
     { key: ActivityTypes.CALL_EMAIL, value: 'I called/emailed someone' },
@@ -340,7 +343,18 @@
     {/if}
   </div>
   <div class="float-wrapper">
-    <button class="ad-hoc-event-btn primary" on:click={onToggleEventForm}>
+    {#if submissionsDisabled}
+      <p class="deadline-notice">
+        Note: the deadline for submissions has ended {submissionsDeadline
+          ? `as of ${submissionsDeadline}`
+          : ''}
+      </p>
+    {/if}
+    <button
+      class="ad-hoc-event-btn primary"
+      on:click={onToggleEventForm}
+      disabled={submissionsDisabled}
+    >
       <span class="fa fa-circle-plus" />
       <span>Log an Activity</span></button
     >
@@ -598,6 +612,16 @@
     box-shadow: 6px 0px 0px 0px var(--pageBg), -6px 0px 0px 0px var(--pageBg),
       0 -8px 12px 0px rgb(0 0 0 / 15%);
     z-index: 1;
+  }
+
+  .deadline-notice {
+    margin: 0;
+    height: 40px;
+    padding-right: 1rem;
+    font-style: italic;
+    color: #888;
+    display: flex;
+    align-items: center;
   }
 
   @media screen and (max-width: 768px) {

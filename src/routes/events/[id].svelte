@@ -31,7 +31,7 @@
   import PopModal from '../../components/PopModal.svelte';
   import Stepper from '../../components/Stepper.svelte';
   import Switch from '../../components/Switch.svelte';
-  import { user, userAttendedEvents } from '../../modules/stores';
+  import { user, userAttendedEvents, configData } from '../../modules/stores';
   import { getFirstName } from '../../modules/helpers';
   import rest from '../../modules/rest';
   import AttendanceNotice from '../../components/AttendanceNotice.svelte';
@@ -40,6 +40,7 @@
   export let attendees: Attendee[];
   export let memberList: Member[];
 
+  const { submissionsDisabled } = $configData;
   let liveMemberList = [...memberList];
   let liveAttendeeList = [...attendees];
   $: nonAttendees = liveMemberList.filter(
@@ -172,7 +173,7 @@
 
       {#if userDidAttend}
         <AttendanceNotice event={userAttendedEvent} />
-      {:else}
+      {:else if !submissionsDisabled}
         <button on:click={() => (showAttendanceForm = true)}
           >Mark Your Attendance</button
         >

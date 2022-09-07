@@ -1,8 +1,10 @@
 <script lang="ts">
   import { editingAttendedEvent } from '../modules/stores/users';
+  import { configData } from '../modules/stores/config';
   export let event: AttendedChamberEvent;
 
   $: evType = event?.eventType[0];
+  const { submissionsDisabled } = $configData;
 
   function getUrlForContest() {
     const now = new Date();
@@ -30,10 +32,12 @@
   <span class="fa fa-circle-arrow-right" />
 </a>
 
-<button on:click|preventDefault|stopPropagation={onEdit}>
-  <span class="fa fa-pen-to-square" />
-  <span>Edit Your Attendance</span>
-</button>
+{#if !submissionsDisabled}
+  <button on:click|preventDefault|stopPropagation={onEdit}>
+    <span class="fa fa-pen-to-square" />
+    <span>Edit Your Attendance</span>
+  </button>
+{/if}
 
 <style lang="scss">
   @import '../styles/modal-form.scss';

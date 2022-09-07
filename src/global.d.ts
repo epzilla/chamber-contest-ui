@@ -129,3 +129,8 @@ type MemberActivityRsp = {
   events: ChamberEvent[];
   stats: MemberStatEntry;
 };
+
+type ConfigData = {
+  submissionsDisabled: boolean;
+  submissionsDeadline: string;
+};
