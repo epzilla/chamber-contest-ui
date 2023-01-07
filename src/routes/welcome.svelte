@@ -3,11 +3,14 @@
 
   export async function load({ fetch }) {
     try {
+      const now = new Date();
+      const currentYear = now.getFullYear();
       const memberListResult = await fetch(`${BASE_URL}members`);
       const memberList = await memberListResult.json();
       return {
         props: {
-          memberList
+          memberList,
+          currentYear
         }
       };
     } catch (err) {
@@ -22,6 +25,7 @@
 <script lang="ts">
   import { members } from '../modules/stores';
 
+  export let currentYear: number;
   export let memberList: Member[];
   let selectedMember: Member | null = null;
 
@@ -44,7 +48,7 @@
 </script>
 
 <section class="welcome">
-  <h1>Welcome to the 2022 Madison Chamber Home Run Challenge!</h1>
+  <h1>Welcome to the {currentYear} Madison Chamber Home Run Challenge!</h1>
 
   <p>Select your name from our list of ambassadors below to get started:</p>
 
