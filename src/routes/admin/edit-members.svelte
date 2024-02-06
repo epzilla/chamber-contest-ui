@@ -36,6 +36,7 @@
   let keyListener;
   let editableCells = [];
   let isAdding = false;
+  let isDraggingFile = false;
 
   function getNextId() {
     const ids = memberList.map(m => m.id);
@@ -202,6 +203,36 @@
     isAdding = false;
   }
 
+  function onFileDragenter(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingFile = true;
+  }
+
+  function onFileDragover(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+  }
+
+  function onFileDragLeave(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingFile = false;
+  }
+
+  function onFileDragEnd(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingFile = false;
+  }
+
+  function onFileDrop(e: DragEvent) {
+    e.preventDefault();
+    e.stopPropagation();
+    isDraggingFile = false;
+    rest.uploadFile('members-file', e.dataTransfer.files[0]);
+  }
+
   resetDataAfterSave();
 
   $: {
@@ -292,8 +323,36 @@
   </div>
 </div>
 
+<div
+  class={`file-drop ${isDraggingFile ? 'dragging' : ''}`}
+  on:dragover={onFileDragover}
+  on:drop={onFileDrop}
+  on:dragenter={onFileDragenter}
+  on:dragend={onFileDragEnd}
+  on:dragleave={onFileDragLeave}
+>
+  Drop Excel File Here to Add Members
+</div>
+
 <style lang="scss">
   @import './styles';
+
+  .file-drop {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 300px;
+    min-height: 300px;
+    width: 100%;
+    border: 3px dashed #ccc;
+    border-radius: 5px;
+    margin-top: 20px;
+
+    &.dragging {
+      background-color: #888;
+      border: 3px dashed green;
+    }
+  }
 
   .member-table {
     width: 95%;

@@ -51,4 +51,20 @@ const del = async (url: string, data?: unknown) => {
   return res.status;
 };
 
-export default { get, post, put, del };
+const uploadFile = async (url: string, file: File) => {
+  console.log('Uploading file...');
+  try {
+    const formData = new FormData();
+    formData.append('file', file);
+    const response = await fetch(`${BASE_URL}${url}`, {
+      method: 'POST',
+      body: formData
+    });
+    const result = await response.json();
+    return result;
+  } catch (error) {
+    console.error('Error:', error);
+  }
+};
+
+export default { get, post, put, del, uploadFile };
