@@ -45,18 +45,27 @@
   export let pastEvents: ChamberEvent[];
 
   let activityOptions: KVP[] = [
-    { key: ActivityTypes.CALL_EMAIL, value: 'I called/emailed someone' },
-    { key: ActivityTypes.DELIVERY, value: 'I made a delivery' },
-    { key: ActivityTypes.EVENT, value: 'I attended an event' },
-    { key: ActivityTypes.OTHER, value: 'Something else (specify below)' }
-  ];
-  let subActivityOptions: KVP[] = [
-    { key: SubActivityTypes.CALL, value: 'Call' },
-    { key: SubActivityTypes.EMAIL, value: 'Email' },
-    { key: SubActivityTypes.CALL_AND_EMAIL, value: 'Both!' }
+    {
+      key: ActivityTypes.SPONSORSHIP_YOUR_COMPANY,
+      value: 'I referred my company for a sponsorship'
+    },
+    {
+      key: ActivityTypes.SPONSORSHIP_OUTSIDE_REFERRAL,
+      value: 'I referred another company for a sponsorship'
+    },
+    { key: ActivityTypes.RIBBON_CUTTING, value: 'I attended a ribbon cutting' },
+    { key: ActivityTypes.BRING_GUEST, value: 'I brought a guest to an event' },
+    { key: ActivityTypes.REJOIN, value: 'I renewed my chamber membership' },
+    { key: ActivityTypes.GIFT_DELIVERY, value: 'I delivered a gift' },
+    {
+      key: ActivityTypes.REFER_AMBASSADOR,
+      value: 'I referred a new ambassador'
+    },
+    { key: ActivityTypes.REFER_MEMBER, value: 'I referred a new member' },
+    { key: ActivityTypes.SUPPLIER_REFERRAL, value: 'I referred a supplier' },
+    { key: ActivityTypes.EVENT_HELP, value: 'I helped with an event' }
   ];
   let chosenActivity: ActivityTypes | null = null;
-  let subActivity: SubActivityTypes | null = null;
   let selectedEvent: ChamberEvent | null = null;
   let guestCount = 0;
   let guestNames = [];
@@ -71,7 +80,7 @@
   let phone = '';
   let email = '';
   let otherActivity = '';
-  let otherActivityPoints = 1;
+  let otherActivityPoints = 5;
   let now = new Date();
   now.setSeconds(0);
   now.setMilliseconds(0);
@@ -84,48 +93,10 @@
     return date.toISOString();
   }
 
-  function genCallEmailTitle() {
-    switch (subActivity) {
-      case SubActivityTypes.CALL:
-        return `Called ${callee}`;
-      case SubActivityTypes.EMAIL:
-        return `Emailed ${callee}`;
-      case SubActivityTypes.CALL_AND_EMAIL:
-        return `Called and emailed ${callee}`;
-    }
-  }
-
-  function genCallEmailSuccessSubstring(
-    subActivityType: SubActivityTypes,
-    contact: string
-  ) {
-    switch (subActivityType) {
-      case SubActivityTypes.CALL:
-        return `calling ${contact}`;
-      case SubActivityTypes.EMAIL:
-        return `emailing ${contact}`;
-      case SubActivityTypes.CALL_AND_EMAIL:
-        return `calling and emailing ${contact}`;
-    }
-  }
-
-  function genSuccessMsg(
-    ev: ChamberEvent,
-    activity: ActivityTypes,
-    subActivityType: SubActivityTypes,
-    contact: string,
-    orgName: string
-  ) {
-    const pts = ev.eventType[0].points;
+  function genSuccessMsg(ev: ChamberEvent, activity: ActivityTypes) {
+    const pts = otherActivityPoints;
     const ptsStr = pts > 1 ? `${pts} points` : `1 point`;
     switch (activity) {
-      case ActivityTypes.CALL_EMAIL:
-        return `${getRandomExclam()} You earned ${ptsStr} for ${genCallEmailSuccessSubstring(
-          subActivityType,
-          contact
-        )}.`;
-      case ActivityTypes.DELIVERY:
-        return `${getRandomExclam()} You earned ${ptsStr} for your delivery to ${orgName}.`;
       case ActivityTypes.EVENT:
         return `${getRandomExclam()} You earned ${ptsStr} for attending ${
           ev.title
@@ -167,40 +138,6 @@
       submitting = true;
       try {
         switch (chosenActivity) {
-          case ActivityTypes.CALL_EMAIL:
-            selectedEvent = await rest.post(`events/ad-hoc`, {
-              memberId: $user?.id,
-              guestNames: [callee],
-              guestCount: 0,
-              phone,
-              email,
-              eventType: $eventTypes.find(e => e.id == 6),
-              dateEntered: new Date(),
-              startTime: new Date(startTime),
-              endTime: genEndTimeFromStartTime(),
-              title: genCallEmailTitle(),
-              address: org,
-              notes: '',
-              org,
-              isAdHoc: true
-            });
-            break;
-          case ActivityTypes.DELIVERY:
-            selectedEvent = await rest.post(`events/ad-hoc`, {
-              memberId: $user?.id,
-              guestNames: [callee],
-              guestCount: 0,
-              eventType: $eventTypes.find(e => e.id == 5),
-              dateEntered: new Date(),
-              startTime,
-              endTime: genEndTimeFromStartTime(),
-              title: 'MCC Business Delivery',
-              address: org,
-              org,
-              notes: deliveryNotes,
-              isAdHoc: true
-            });
-            break;
           case ActivityTypes.EVENT:
             await rest.post(`events/mark-attendance`, {
               memberId: $user?.id,
@@ -237,13 +174,7 @@
         });
         addAlert({
           type: 'success',
-          msg: genSuccessMsg(
-            selectedEvent,
-            chosenActivity,
-            subActivity,
-            callee,
-            org
-          ),
+          msg: genSuccessMsg(selectedEvent, chosenActivity),
           timeout: 5000,
           clickable: true
         });
@@ -261,15 +192,6 @@
       return false;
     }
     switch (chosenActivity) {
-      case ActivityTypes.CALL_EMAIL:
-        return (
-          subActivity != null &&
-          !!callee &&
-          (!phone || phoneIsValid()) &&
-          (!email || emailIsValid())
-        );
-      case ActivityTypes.DELIVERY:
-        return !!org && !!deliveryNotes;
       case ActivityTypes.EVENT:
         return !!selectedEvent;
       case ActivityTypes.OTHER:
@@ -354,11 +276,7 @@
         {/if}
       </p>
     {/if}
-    <button
-      class="ad-hoc-event-btn primary"
-      on:click={onToggleEventForm}
-      disabled={$configData.submissionsDisabled}
-    >
+    <button class="ad-hoc-event-btn primary" on:click={onToggleEventForm}>
       <span class="fa fa-circle-plus" />
       <span>Log an Activity</span></button
     >
@@ -369,9 +287,7 @@
   <div class="pop-modal-form">
     <div
       class="main-outer"
-      class:with-spacer={!!chosenActivity &&
-        (isSmallScreen ||
-          (chosenActivity === ActivityTypes.CALL_EMAIL && subActivity != null))}
+      class:with-spacer={!!chosenActivity && isSmallScreen}
     >
       <div class="main-inner">
         <h3>Let's give you some credit!</h3>
@@ -387,10 +303,10 @@
             }}
           />
         </div>
-        {#if chosenActivity === ActivityTypes.EVENT}
+        {#if chosenActivity === ActivityTypes.RIBBON_CUTTING || chosenActivity === ActivityTypes.BRING_GUEST || chosenActivity === ActivityTypes.EVENT_HELP}
           <div class="event-form">
             <div class="form-group">
-              <label>Which event did you attend?</label>
+              <label>Which event?</label>
               <EventSelector
                 bind:selected={selectedEvent}
                 useUnattended
@@ -400,171 +316,26 @@
                 }}
               />
             </div>
-            {#if selectedEvent}
-              <div class="form-group">
-                <label for="">Did you bring any guests?</label>
-                <Stepper
-                  min={0}
-                  onChange={onGuestCountChange}
-                  value={guestCount}
-                />
-              </div>
-              {#if guestCount}
-                <div class="form-group">
-                  <label for="add-names">Add guests names? (optional)</label>
-                  <Switch bind:checked={addNames} />
-                </div>
-
-                {#if addNames}
-                  <div class="form-group">
-                    {#each [...Array(guestCount)] as x, i}
-                      <label for={`guest-name-${i}`}>Guest {i + 1}:</label>
-                      <input
-                        class="name-input"
-                        type="text"
-                        name={`guest-name-${i}`}
-                        bind:this={guestNames[i]}
-                      />
-                    {/each}
-                  </div>
-                {/if}
-              {/if}
-            {/if}
           </div>
-        {:else if chosenActivity === ActivityTypes.CALL_EMAIL}
-          <div class="call-email-form">
-            <div class="form-group">
-              <label>Which did you do?</label>
-              <RadioButtons
-                id="choose-sub-activity"
-                options={subActivityOptions}
-                value={subActivity}
-                onSelect={v => {
-                  subActivity = v.key;
-                  formIsValid = addEventFormIsValid();
-                }}
-              />
-            </div>
-            {#if subActivity != null}
-              <div class="form-group">
-                <label class="with-sublabel">Who did you contact?</label>
-                <small
-                  >{`Please fill in the name. ${
-                    subActivity === SubActivityTypes.CALL
-                      ? 'Phone number is'
-                      : subActivity === SubActivityTypes.EMAIL
-                      ? 'Email is'
-                      : 'Phone number and email are '
-                  } optional.`}</small
-                >
-                <div class="form-group-inline">
-                  <label for="name-input">Name:</label>
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    id="name-input"
-                    name="name-input"
-                    bind:value={callee}
-                  />
-                </div>
-                {#if subActivity === SubActivityTypes.CALL || subActivity === SubActivityTypes.CALL_AND_EMAIL}
-                  <div class="form-group-inline">
-                    <label for="phone-input">Phone:</label>
-                    <input
-                      type="tel"
-                      placeholder="e.g. (256) 555-5555"
-                      id="phone-input"
-                      name="phone-input"
-                      bind:value={phone}
-                    />
-                  </div>
-                {/if}
-                {#if subActivity === SubActivityTypes.EMAIL || subActivity === SubActivityTypes.CALL_AND_EMAIL}
-                  <div class="form-group-inline">
-                    <label for="email-input">Email:</label>
-                    <input
-                      type="email"
-                      placeholder="e.g. chamberperson@madison.rocks"
-                      id="email-input"
-                      name="email-input"
-                      bind:value={email}
-                    />
-                  </div>
-                {/if}
-              </div>
-              <div class="form-group">
-                <label for="start-time">When?</label>
-                <input
-                  type="datetime-local"
-                  bind:value={startTime}
-                  name="start-time"
-                  id="start-time"
-                  step="300"
-                />
-              </div>
-            {/if}
-          </div>
-        {:else if chosenActivity === ActivityTypes.DELIVERY}
-          <div class="delivery-form">
-            <div class="form-group">
-              <label for="where-delivered">Where to?</label>
-              <input
-                type="text"
-                placeholder="Organization/Company"
-                bind:value={org}
-                name="where-delivered"
-                id="where-delivered"
-              />
-            </div>
-            <div class="form-group">
-              <label for="start-time">When?</label>
-              <input
-                type="datetime-local"
-                bind:value={startTime}
-                name="start-time"
-                id="start-time"
-                step="300"
-              />
-            </div>
-            <div class="form-group">
-              <label for="delivery-desc">Desribe what you delivered:</label>
-              <input
-                type="text"
-                placeholder="Describe your delivery"
-                bind:value={deliveryNotes}
-                name="delivery-desc"
-                id="delivery-desc"
-              />
-            </div>
-          </div>
-        {:else if chosenActivity === ActivityTypes.OTHER}
+        {:else}
           <div class="other-actiivity-form">
             <div class="form-group">
-              <label for="other-activity-desc">Describe what you did:</label>
+              <label for="other-activity-desc">Additional details:</label>
               <input
                 type="text"
-                placeholder="Describe your activity"
                 bind:value={otherActivity}
                 name="other-activity-desc"
                 id="other-activity-desc"
               />
             </div>
             <div class="form-group">
-              <label for="start-time">When?</label>
+              <label for="start-time">When did you do it?</label>
               <input
                 type="datetime-local"
                 bind:value={startTime}
                 name="start-time"
                 id="start-time"
                 step="300"
-              />
-            </div>
-            <div class="form-group">
-              <label for="start-time">Point Value?</label>
-              <Stepper
-                min={1}
-                value={otherActivityPoints}
-                onChange={num => (otherActivityPoints = num)}
               />
             </div>
           </div>

@@ -33,6 +33,11 @@
     gap: 8px;
     align-items: center;
     width: 100%;
-    max-width: 300px;
+    min-width: 400px;
+
+    @media screen and (max-width: 455px) {
+      min-width: unset;
+      max-width: unset;
+    }
   }
 </style>
