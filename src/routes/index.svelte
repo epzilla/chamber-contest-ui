@@ -101,6 +101,8 @@
         return `${getRandomExclam()} You earned ${ptsStr} for attending ${
           ev.title
         }.`;
+      default:
+        return `${getRandomExclam()} You earned ${ptsStr}.`;
     }
   }
 
@@ -139,6 +141,9 @@
       try {
         switch (chosenActivity) {
           case ActivityTypes.EVENT:
+          case ActivityTypes.RIBBON_CUTTING:
+          case ActivityTypes.BRING_GUEST:
+          case ActivityTypes.EVENT_HELP:
             await rest.post(`events/mark-attendance`, {
               memberId: $user?.id,
               eventId: selectedEvent.id,
@@ -147,7 +152,7 @@
               org: ''
             });
             break;
-          case ActivityTypes.OTHER:
+          default:
             selectedEvent = await rest.post(`events/ad-hoc`, {
               memberId: $user?.id,
               guestNames: [],
