@@ -196,6 +196,8 @@
         return !!selectedEvent;
       case ActivityTypes.OTHER:
         return !!otherActivity;
+      default:
+        return true;
     }
   }
 
