@@ -7,6 +7,5 @@ export const configData = writable<ConfigData>({
 });
 
 rest.get('config').then((data: ConfigData) => {
-  console.log('config data', data);
   configData.set(data);
 });
