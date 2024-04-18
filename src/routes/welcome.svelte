@@ -5,8 +5,11 @@
     try {
       const now = new Date();
       const currentYear = now.getFullYear();
+      console.log('fetching members...');
       const memberListResult = await fetch(`${BASE_URL}members`);
+      console.log('members fetched');
       const memberList = await memberListResult.json();
+      console.log('members parsed');
       return {
         props: {
           memberList,
