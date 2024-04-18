@@ -14,6 +14,7 @@
         }
       };
     } catch (err) {
+      console.log(err);
       return {
         status: 500,
         error: err
