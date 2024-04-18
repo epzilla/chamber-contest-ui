@@ -63,11 +63,7 @@
     },
     { key: ActivityTypes.REFER_MEMBER, value: 'I referred a new member' },
     { key: ActivityTypes.SUPPLIER_REFERRAL, value: 'I referred a supplier' },
-    { key: ActivityTypes.EVENT_HELP, value: 'I helped with an event' },
-    {
-      key: ActivityTypes.APPEARED_IN_MEDIA,
-      value: 'I appeared in chamber-produced media'
-    }
+    { key: ActivityTypes.EVENT_HELP, value: 'I helped with an event' }
   ];
   let chosenActivity: ActivityTypes | null = null;
   let selectedEvent: ChamberEvent | null = null;
