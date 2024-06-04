@@ -193,7 +193,6 @@ body {
 main {
 	height: calc(100% - 56px);
 	width: 100%;
-	max-width: 800px;
 	margin: 56px auto 0 auto;
 	padding: 1rem 0.25rem 1rem 0.25rem;
 	display: flex;
@@ -210,6 +209,8 @@ main > h1 {
 	padding-left: 1rem;
 	padding-right: 1rem;
 	width: 100%;
+	max-width: 800px;
+	margin: 0 auto;
 }
 
 input,

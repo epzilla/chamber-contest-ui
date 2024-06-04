@@ -23,11 +23,11 @@
     return maxId + 1;
   }
 
-  function selectAllTextInCell(cell: HTMLDivElement) {
-    cell.focus();
+  function selectAllTextInCell(cell?: HTMLDivElement) {
+    cell?.focus();
     let selection = window.getSelection();
     let range = document.createRange();
-    if (selection && range) {
+    if (selection && range && cell) {
       range.selectNodeContents(cell);
       selection.removeAllRanges();
       selection.addRange(range);

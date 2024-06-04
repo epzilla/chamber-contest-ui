@@ -122,6 +122,7 @@
   .welcome {
     padding: 2rem;
     text-align: center;
+    max-width: 800px;
 
     h1 {
       font-size: 2rem;

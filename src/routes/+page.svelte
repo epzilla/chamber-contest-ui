@@ -339,6 +339,7 @@
     grid-template-rows: 1fr 50px;
     height: 100%;
     width: 100%;
+    max-width: 800px;
   }
 
   .events-main {
