@@ -120,7 +120,7 @@
   }
 
   .results-table {
-    width: 75%;
+    width: 100%;
     display: block;
     background-color: white;
     border: 1px solid #ccc;

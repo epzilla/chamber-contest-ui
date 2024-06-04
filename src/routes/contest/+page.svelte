@@ -50,8 +50,10 @@
   });
 </script>
 
-<h2>{timePeriod} {SITE_TITLE} Standings</h2>
+<section class="main">
+  <h2>{timePeriod} {SITE_TITLE} Standings</h2>
 
-{#if totals && timePeriod}
-  <ResultsTable {totals} {timePeriod} isCurrent />
-{/if}
+  {#if totals && timePeriod}
+    <ResultsTable {totals} {timePeriod} isCurrent />
+  {/if}
+</section>
