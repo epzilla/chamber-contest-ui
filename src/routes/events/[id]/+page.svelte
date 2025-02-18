@@ -9,8 +9,9 @@
   import { getFirstName } from '$lib/modules/helpers';
   import rest from '$lib/modules/rest';
   import AttendanceNotice from '$lib/components/AttendanceNotice.svelte';
-  import type { AttendedChamberEvent } from '$lib/modules/types';
+  import type { AttendedChamberEvent, Member } from '$lib/modules/types';
   import type { PageData } from './$types';
+  import Svelecte from 'svelecte';
 
   export let data: PageData;
   let { event, memberList, attendees } = data;
@@ -21,11 +22,14 @@
   $: nonAttendees = liveMemberList.filter((m) => !liveAttendeeList.find((a) => a.id === m.id));
 
   let showAttendanceForm = false;
+  let showAddPointsForm = false;
   let submitting = false;
   let listInitted = false;
   let addNames = false;
   let futureEventInterval: any;
   let guestNames: any[] = [];
+  let selectedAwardee: number | null = null;
+  let pointsAwarded = 5;
 
   $: selectedAttendee = $user?.id ?? null;
   $: isFutureEvent = event ? new Date(event.startTime!) >= new Date() : false;
@@ -85,6 +89,33 @@
         org: ''
       });
       showAttendanceForm = false;
+      showAddPointsForm = false;
+      const m = memberList!.find((m) => m.id === selectedAttendee);
+      // @ts-ignore
+      liveAttendeeList = [...liveAttendeeList, { ...m, guests: guestCount, names: guestNames }];
+      selectedAttendee = null;
+      listInitted = false;
+      let updatedEvents = [...$userAttendedEvents];
+      updatedEvents.push(event as unknown as AttendedChamberEvent);
+      userAttendedEvents.set(updatedEvents);
+    } catch (e) {
+      debugger;
+    } finally {
+      submitting = false;
+    }
+  }
+
+  async function onSubmitAddPoints() {
+    submitting = true;
+    try {
+      await rest.post(`events/add-points`, {
+        memberId: selectedAttendee,
+        eventId: event!.id,
+        points: pointsAwarded,
+        org: ''
+      });
+      showAttendanceForm = false;
+      showAddPointsForm = false;
       const m = memberList!.find((m) => m.id === selectedAttendee);
       // @ts-ignore
       liveAttendeeList = [...liveAttendeeList, { ...m, guests: guestCount, names: guestNames }];
@@ -106,11 +137,21 @@
     addNames = false;
   }
 
+  function onAddPointsFormToggle() {
+    showAddPointsForm = !showAddPointsForm;
+    guestCount = 0;
+    addNames = false;
+  }
+
   function onGuestCountChange(n: number) {
     guestCount = n;
     if (n === 0) {
       addNames = false;
     }
+  }
+
+  function onPointAwardChange(n: number) {
+    pointsAwarded = n;
   }
 </script>
 
@@ -144,6 +185,9 @@
         <AttendanceNotice event={userAttendedEvent} />
       {:else if !submissionsDisabled}
         <button on:click={() => (showAttendanceForm = true)}>Mark Your Attendance</button>
+      {/if}
+      {#if $user?.isSuperuser}
+        <button on:click={() => (showAddPointsForm = true)}>Award Someone Points!</button>
       {/if}
       <PopModal show={showAttendanceForm} onClose={onAttendanceFormToggle}>
         <div class="pop-modal-form">
@@ -184,6 +228,40 @@
           <button on:click={onAttendanceFormToggle} disabled={submitting || !selectedAttendee}
             >Cancel</button
           >
+        </div>
+      </PopModal>
+      <PopModal show={showAddPointsForm} onClose={onAddPointsFormToggle}>
+        <div class="pop-modal-form">
+          <h3>Who would you like to awards points to?</h3>
+          <div class="form-group">
+            <Svelecte
+              options={memberList}
+              bind:value={selectedAwardee}
+              valueField="id"
+              valueAsObject
+              placeholder="Select or begin typing..."
+              clearable
+              searchable
+              labelField="name"
+            />
+          </div>
+          <div class="form-group">
+            <label for="">How many points would you like to award?</label>
+            <Stepper min={1} onChange={onPointAwardChange} value={pointsAwarded} />
+          </div>
+          <div class="form-group">
+            <label for="add-names">Notes (optional)</label>
+            <textarea name="notes" id="notes" bind:value={guestNames} />
+          </div>
+          <button
+            class="secondary"
+            on:click={onSubmitAddPoints}
+            disabled={submitting || !selectedAwardee}
+            style="margin-bottom: 8px"
+          >
+            <span class="fa fa-check" />Submit</button
+          >
+          <button on:click={onAddPointsFormToggle} disabled={submitting}>Cancel</button>
         </div>
       </PopModal>
     {:else}
