@@ -30,6 +30,11 @@ export const Members = db.define(
 			field: 'is_admin',
 			type: DataTypes.BOOLEAN,
 			allowNull: false
+		},
+		isSuperuser: {
+			field: 'is_superuser',
+			type: DataTypes.BOOLEAN,
+			allowNull: true
 		}
 	},
 	{

@@ -12,6 +12,7 @@ type myEventsRsp = {
 };
 
 export const pastEvents = writable<ChamberEvent[]>([]);
+export const thisYearsPastEvents = writable<ChamberEvent[]>([]);
 export const myEvents = writable<ChamberEvent[]>([]);
 export const myUnattendedEvents = writable<ChamberEvent[]>([]);
 export const myUnattendedPastEvents = writable<ChamberEvent[]>([]);
@@ -19,6 +20,13 @@ export const myUnattendedPastEvents = writable<ChamberEvent[]>([]);
 rest.get('past-events').then((events: ChamberEvent[]) => {
 	events.sort(sortEventsByTime);
 	pastEvents.set(events);
+	thisYearsPastEvents.set(
+		events.filter((e) => {
+			const eventDate = new Date(e.startTime!);
+			const now = new Date();
+			return eventDate.getFullYear() === now.getFullYear();
+		})
+	);
 });
 
 user.subscribe((u) => {

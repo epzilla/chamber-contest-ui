@@ -8,8 +8,8 @@
   export let data: PageData;
   let { memberList } = data;
 
-  let cellData: [number, string, string, boolean, boolean][];
-  let initialData: [number, string, string, boolean, boolean][];
+  let cellData: [number, string, string, boolean, boolean, boolean][];
+  let initialData: [number, string, string, boolean, boolean, boolean][];
   let hasChanges = false;
   let newRow = [getNextId(), 'Enter Name', '', false, true];
   let keyListener: any;
@@ -57,6 +57,10 @@
     cellData[rowIndex][4] = !cellData[rowIndex][4];
   }
 
+  async function toggleSuperuser(rowIndex: number) {
+    cellData[rowIndex][5] = !cellData[rowIndex][5];
+  }
+
   function isValidEntry(entry: (string | number | boolean)[]) {
     return entry[1] != '' && entry[2] != '';
   }
@@ -83,7 +87,8 @@
           name: addedData[1],
           email: addedData[2],
           isAdmin: addedData[3],
-          isActive: addedData[4]
+          isSuperuser: addedData[4],
+          isActive: addedData[5]
         };
         memberList = memberList!.concat(newMember);
       } else {
@@ -101,14 +106,16 @@
             member.name != row[1] ||
             member.email != row[2] ||
             member.isAdmin != row[3] ||
-            member.isActive != row[4]
+            member.isSuperuser !== row[4] ||
+            member.isActive != row[5]
           ) {
             changeList.push({
               ...member,
               name: row[1],
               email: row[2],
               isAdmin: row[3],
-              isActive: row[4]
+              isSuperuser: row[4],
+              isActive: row[5]
             });
           }
         }
@@ -171,9 +178,10 @@
         member.name,
         member.email,
         member.isAdmin,
+        member.isSuperuser,
         member.isActive
       ])
-    ] as [number, string, string, boolean, boolean][];
+    ] as [number, string, string, boolean, boolean, boolean][];
     initialData = [...cellData.map((d) => [...d])] as typeof cellData;
     hasChanges = false;
     isAdding = false;
@@ -224,6 +232,7 @@
     <div class="table-header-cell">Name</div>
     <div class="table-header-cell">Email</div>
     <div class="table-header-cell switch-cell">Admin?</div>
+    <div class="table-header-cell switch-cell">SuperUser?</div>
     <div class="table-header-cell switch-cell">Active?</div>
   </div>
   <div class="table-body">
@@ -231,7 +240,7 @@
       <div
         class="table-row"
         class:existing-row={!isAdding || i < cellData.length - 1}
-        class:inactive-row={!row[4]}
+        class:inactive-row={!row[5]}
         class:new-row={isAdding && i == cellData.length - 1}
         data-row={i}
       >
@@ -239,7 +248,7 @@
           <input
             type="text"
             bind:value={row[1]}
-            disabled={!row[4] || (isAdding && i < cellData.length - 1)}
+            disabled={!row[5] || (isAdding && i < cellData.length - 1)}
             placeholder={isAdding && i === cellData.length - 1 ? 'Jim Chamberman' : ''}
             autocapitalize="words"
             autocorrect="off"
@@ -254,7 +263,7 @@
           <input
             type="email"
             bind:value={row[2]}
-            disabled={!row[4] || (isAdding && i < cellData.length - 1)}
+            disabled={!row[5] || (isAdding && i < cellData.length - 1)}
             placeholder={isAdding && i === cellData.length - 1 ? 'ambassador@mychamber.com' : ''}
             autocomplete="off"
             autocorrect="off"
@@ -264,7 +273,7 @@
         <div class="table-cell switch-cell">
           <Switch
             checked={!!row[3]}
-            disabled={!row[4] || (isAdding && i < cellData.length - 1)}
+            disabled={!row[5] || (isAdding && i < cellData.length - 1)}
             onChange={(val) => {
               toggleAdmin(i);
             }}
@@ -276,6 +285,15 @@
             disabled={isAdding && i < cellData.length - 1}
             onChange={(val) => {
               toggleActive(i);
+            }}
+          />
+        </div>
+        <div class="table-cell switch-cell">
+          <Switch
+            checked={!!row[5]}
+            disabled={isAdding && i < cellData.length - 1}
+            onChange={(val) => {
+              toggleSuperuser(i);
             }}
           />
         </div>
@@ -335,7 +353,7 @@
 
   .table-header,
   .table-row {
-    grid-template-columns: 3fr 4fr 70px 60px;
+    grid-template-columns: 3fr 4fr 75px 75px 75px;
     gap: 10px;
 
     &.inactive-row * {

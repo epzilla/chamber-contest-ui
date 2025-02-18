@@ -13,11 +13,13 @@
   import { addAlert } from '../lib/modules/stores/alerts';
   import { logCaughtError } from '../lib/modules/errors';
   import { configData } from '../lib/modules/stores';
-  import type { ChamberEvent, KVP } from '$lib/modules/types';
+  import type { ChamberEvent, KVP, Member } from '$lib/modules/types';
   import type { PageData } from './$types';
+  import Svelecte from 'svelecte';
+  import Stepper from '$lib/components/Stepper.svelte';
 
   export let data: PageData;
-  const { upcomingEvents, pastEvents } = data;
+  const { upcomingEvents, pastEvents, memberList } = data;
 
   let activityOptions: KVP[] = [
     {
@@ -50,6 +52,10 @@
   let guestNames: any[] = [];
   let addNames = false;
   let showAddEventForm = false;
+  let showAddPointsForm = false;
+  let selectedAwardee: Member | null = null;
+  let pointsAwarded = 5;
+  let pointAwardNotes = '';
   let submitting = false;
   let formIsValid = false;
   let keyListener: any;
@@ -100,8 +106,16 @@
     }
   }
 
+  function onToggleAddPointsForm() {
+    showAddPointsForm = !showAddPointsForm;
+  }
+
   function onGuestCountChange(count: number) {
     guestCount = count;
+  }
+
+  function onPointAwardChange(n: number) {
+    pointsAwarded = n;
   }
 
   async function onSubmit() {
@@ -158,6 +172,29 @@
       } finally {
         submitting = false;
       }
+    }
+  }
+
+  async function onSubmitAddPoints() {
+    submitting = true;
+    console.log({
+      memberId: selectedAwardee?.id,
+      points: pointsAwarded,
+      notes: pointAwardNotes,
+      eventId: selectedEvent?.id,
+      org: ''
+    });
+    try {
+      await rest.post(`events/award-points`, {
+        memberId: selectedAwardee!.id,
+        pointsAwarded,
+        eventId: selectedEvent?.id,
+        notes: pointAwardNotes,
+        org: ''
+      });
+    } finally {
+      submitting = false;
+      showAddPointsForm = false;
     }
   }
 
@@ -256,6 +293,12 @@
       <span class="fa fa-circle-plus" />
       <span>Log an Activity</span></button
     >
+    {#if $user?.isSuperuser}
+      <button class="ad-hoc-event-btn secondary" on:click={onToggleAddPointsForm}>
+        <span class="fa fa-trophy" />
+        <span>Award Someone Points</span></button
+      >
+    {/if}
   </div>
 </div>
 
@@ -325,6 +368,46 @@
         <button on:click={onToggleEventForm} class="bottom-button">Cancel</button>
       </div>
     </div>
+  </div>
+</PopModal>
+
+<PopModal show={showAddPointsForm} onClose={onToggleAddPointsForm}>
+  <div class="pop-modal-form">
+    <h3>Award Someone Points!</h3>
+    <div class="form-group">
+      <label for="">Who would you like to award points to?</label>
+      <Svelecte
+        options={memberList}
+        bind:value={selectedAwardee}
+        valueField="id"
+        valueAsObject
+        placeholder="Select or begin typing..."
+        clearable
+        searchable
+        labelField="name"
+      />
+    </div>
+    <div class="form-group">
+      <label for="">Which event is this for?</label>
+      <EventSelector bind:selected={selectedEvent} allThisYearsEvents onSelect={(e) => {}} />
+    </div>
+    <div class="form-group">
+      <label for="">How many points would you like to award?</label>
+      <Stepper min={1} onChange={onPointAwardChange} value={pointsAwarded} />
+    </div>
+    <div class="form-group">
+      <label for="add-names">Notes (optional)</label>
+      <textarea name="notes" id="notes" bind:value={pointAwardNotes} />
+    </div>
+    <button
+      class="secondary"
+      on:click={onSubmitAddPoints}
+      disabled={submitting || !selectedAwardee}
+      style="margin-bottom: 8px"
+    >
+      <span class="fa fa-check" />Submit</button
+    >
+    <button on:click={onToggleAddPointsForm} disabled={submitting}>Cancel</button>
   </div>
 </PopModal>
 

@@ -17,6 +17,7 @@ export type Member = {
 	email?: string;
 	isAdmin?: boolean;
 	isActive?: boolean;
+	isSuperuser?: boolean;
 	guests?: number;
 	names?: string[];
 };
