@@ -84,12 +84,12 @@
                 <div class="events-table-header-cell small-screen center">Pts</div>
               </div>
               <div class="events-table-body">
-                {#each events as { eventId, title, startTime, guests, points }}
+                {#each events as { title, startTime, guests, points, pointsAwarded }}
                   <div class="events-table-row">
                     <div>{title}</div>
                     <div>{format(new Date(startTime), 'M/d')}</div>
                     <div>{guests || 0}</div>
-                    <div class="bold">{points}</div>
+                    <div class="bold">{pointsAwarded || points}</div>
                   </div>
                 {/each}
               </div>
