@@ -56,6 +56,8 @@ export type EventAttendance = {
 	title: string;
 	type: string;
 	points: number;
+	// When awarded by an admin, they'll show up here and we need to use this field instead of points
+	pointsAwarded?: number;
 	name: string;
 	guests: number;
 	names: { name: string; org: string }[];
