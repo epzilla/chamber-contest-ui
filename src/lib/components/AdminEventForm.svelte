@@ -24,7 +24,7 @@
   };
   let localStartTime = toDatetimeLocal(editingEvent?.startTime || newEvent.startTime!);
   let localEndTime = toDatetimeLocal(editingEvent?.endTime || newEvent.endTime!);
-  let addToCal = true;
+  let addToCal = false;
   let isSubmitting = false;
   let didSave = false;
   let firstField: any;
