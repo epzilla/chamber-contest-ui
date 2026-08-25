@@ -44,6 +44,10 @@
     {
       key: ActivityTypes.APPEARED_IN_MEDIA,
       value: 'I appeared in chamber-produced media'
+    },
+    {
+      key: ActivityTypes.ATTENDED_AMBASSADOR_EVENT,
+      value: 'I attended an Ambassador event'
     }
   ];
   let chosenActivity: ActivityTypes | null | string = null;
@@ -241,7 +245,7 @@
     let deviceId = localStorage.getItem('deviceId');
     if (!deviceId) {
       deviceId = generateGuid();
-      localStorage.setItem('deviceId', deviceId);
+      localStorage.setItem('deviceId', deviceId!);
     }
     isSmallScreen = window.innerWidth < 768 && window.innerHeight < 768;
   }
@@ -327,7 +331,7 @@
                 bind:selected={selectedEvent}
                 useUnattended
                 onlyPastEvents
-                onSelect={(e) => {
+                onSelect={() => {
                   formIsValid = addEventFormIsValid();
                 }}
               />
@@ -389,7 +393,7 @@
     </div>
     <div class="form-group">
       <label for="">Which event is this for?</label>
-      <EventSelector bind:selected={selectedEvent} allThisYearsEvents onSelect={(e) => {}} />
+      <EventSelector bind:selected={selectedEvent} allThisYearsEvents onSelect={() => {}} />
     </div>
     <div class="form-group">
       <label for="">How many points would you like to award?</label>
